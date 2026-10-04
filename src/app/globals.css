@@ -606,3 +606,14 @@ button {
   0% { transform: scale(0.95); opacity: 0.8; }
   100% { transform: scale(1.15); opacity: 0; }
 }
+
+/* Heritage Passport (#20) */
+@keyframes passport-stamp {
+  0% { transform: scale(2.4) rotate(var(--r, 0deg)); opacity: 0; }
+  60% { transform: scale(0.92) rotate(var(--r, 0deg)); opacity: 1; }
+  100% { transform: scale(1) rotate(var(--r, 0deg)); opacity: 0.92; }
+}
+@keyframes passport-glow {
+  0%, 100% { box-shadow: 0 0 0 rgba(216, 178, 115, 0); }
+  50% { box-shadow: 0 0 18px rgba(216, 178, 115, 0.85); }
+}

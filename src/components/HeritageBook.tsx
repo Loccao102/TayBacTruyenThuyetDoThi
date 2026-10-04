@@ -39,6 +39,7 @@ import DragToFlipCorner from "@/components/DragToFlipCorner";
 import { EthnicBrocadeBorder, EthnicDivider, EthnicEmblem } from "@/components/EthnicBrocade";
 import HeritageVideoModal from "@/components/HeritageVideoModal";
 import HeritageMapCanvas from "@/components/HeritageMapCanvas";
+import HeritagePassport from "@/components/HeritagePassport";
 
 interface HeritageBookProps {
   initialOpen?: boolean;
@@ -99,6 +100,21 @@ export default function HeritageBook({
 
   // Explored sites
   const [exploredSites, setExploredSites] = useState<string[]>(["tay-thien"]);
+  const [stampDates, setStampDates] = useState<Record<string, string>>({});
+
+  // Restore persisted progress (client-only, avoids hydration mismatch)
+  useEffect(() => {
+    try {
+      const savedSites = JSON.parse(localStorage.getItem("taybac_explored_sites") || "[]");
+      const savedDates = JSON.parse(localStorage.getItem("taybac_stamp_dates") || "{}");
+      const today = new Date().toLocaleDateString("vi-VN");
+      const sites: string[] = Array.from(new Set(["tay-thien", ...(Array.isArray(savedSites) ? savedSites : [])]));
+      const dates: Record<string, string> = { ...savedDates };
+      sites.forEach(id => { if (!dates[id]) dates[id] = today; });
+      setExploredSites(sites);
+      setStampDates(dates);
+    } catch {}
+  }, []);
   const [comments, setComments] = useState<Array<{ name: string; date: string; rating: number; text: string }>>([
     {
       name: "Nguyễn Thị Mai",
@@ -138,13 +154,22 @@ export default function HeritageBook({
   }, [selectedSite.id]);
 
   const markAsExplored = (id: string) => {
-    if (!exploredSites.includes(id)) {
-      const next = [...exploredSites, id];
-      setExploredSites(next);
+    setExploredSites(prev => {
+      if (prev.includes(id)) return prev;
+      const next = [...prev, id];
       try {
         localStorage.setItem("taybac_explored_sites", JSON.stringify(next));
       } catch {}
-    }
+      return next;
+    });
+    setStampDates(prev => {
+      if (prev[id]) return prev;
+      const next = { ...prev, [id]: new Date().toLocaleDateString("vi-VN") };
+      try {
+        localStorage.setItem("taybac_stamp_dates", JSON.stringify(next));
+      } catch {}
+      return next;
+    });
   };
 
   // 3D Realistic Page Flip with Synthesized Paper Rustle Sound
@@ -1589,26 +1614,11 @@ export default function HeritageBook({
                       </span>
                     </div>
 
-                    <div
-                      style={{
-                        height: 220,
-                        background: "#e5dcce",
-                        borderRadius: 6,
-                        border: "1px solid rgba(94, 69, 56, 0.2)",
-                        position: "relative",
-                        overflow: "hidden",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        flexDirection: "column",
-                        gap: 8
-                      }}
-                    >
-                      <Compass size={32} color="var(--gold-primary)" />
-                      <span style={{ fontSize: "12px", fontStyle: "italic", color: "var(--ink-muted)" }}>
-                        Bản đồ hành trình cá nhân ({exploredSites.length} dấu mốc son)
-                      </span>
-                    </div>
+                    <HeritagePassport
+                      exploredSites={exploredSites}
+                      stampDates={stampDates}
+                      onOpenSite={handleSelectSiteFromMap}
+                    />
                   </div>
 
                   <button
