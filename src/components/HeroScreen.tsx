@@ -27,6 +27,8 @@ import {
 import MountainMistWipe from "@/components/MountainMistWipe";
 import HighlandWeatherEngine, { HighlandSeason } from "@/components/HighlandWeatherEngine";
 import { EthnicBrocadeBorder, EthnicEmblem } from "@/components/EthnicBrocade";
+import NumberTicker from "@/components/NumberTicker";
+import MagneticButton from "@/components/MagneticButton";
 
 interface HeroScreenProps {
   onOpenBook: () => void;
@@ -507,7 +509,7 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
                     lineHeight: 1.1
                   }}
                 >
-                  {st.val}
+                  <NumberTicker value={st.val} />
                 </div>
                 <div style={{ fontSize: "11px", fontWeight: 700, color: "#fff", marginTop: 2 }}>
                   {st.label}
@@ -521,6 +523,7 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
 
           {/* Action Button Row */}
           <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+            <MagneticButton>
             <button
               onClick={handleOpenMainBook}
               className="btn-warm hero-cta-pulse"
@@ -537,8 +540,10 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
               <span>LẬT MỞ TRANG SỔ</span>
               <ArrowRight size={18} />
             </button>
+            </MagneticButton>
 
             {onOpenMap && (
+              <MagneticButton>
               <button
                 onClick={() => {
                   playWoodBlockSound();
@@ -560,6 +565,7 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
                 <Compass size={17} color="var(--gold-bright)" />
                 <span>BẢN ĐỒ ĐIỀN DÃ</span>
               </button>
+              </MagneticButton>
             )}
 
             {/* Quick sound badge */}

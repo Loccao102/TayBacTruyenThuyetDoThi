@@ -101,6 +101,19 @@ export default function HeritageBook({
   // Explored sites
   const [exploredSites, setExploredSites] = useState<string[]>(["tay-thien"]);
   const [stampDates, setStampDates] = useState<Record<string, string>>({});
+  const [stampKey, setStampKey] = useState(0);
+
+  // Kinetic stamp: slam sound, ink bloom (remount) and a short shake of the whole spread
+  const slamStamp = () => {
+    playStampSound();
+    setStampKey(k => k + 1);
+    const spread = document.querySelector<HTMLElement>(".paper-spread-canvas");
+    if (spread && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      spread.classList.remove("book-shake");
+      void spread.offsetWidth; // restart animation
+      spread.classList.add("book-shake");
+    }
+  };
 
   // Restore persisted progress (client-only, avoids hydration mismatch)
   useEffect(() => {
@@ -916,8 +929,9 @@ export default function HeritageBook({
                     </div>
 
                     <div
-                      className="stamp-explored"
-                      onClick={() => playStampSound()}
+                      key={stampKey}
+                      className="stamp-explored stamp-kinetic"
+                      onClick={slamStamp}
                       style={{ cursor: "pointer" }}
                       title="Chạm để đóng dấu son gỗ"
                     >
@@ -1078,19 +1092,45 @@ export default function HeritageBook({
                           marginBottom: 20
                         }}
                       >
-                        {selectedSite.gallery.map((g, i) => (
-                          <div
-                            key={i}
-                            style={{
-                              borderRadius: 4,
-                              overflow: "hidden",
-                              height: 110,
-                              boxShadow: "0 2px 6px rgba(0,0,0,0.1)"
-                            }}
-                          >
-                            <img src={g.url} alt={g.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                          </div>
-                        ))}
+                        {selectedSite.gallery.map((g, i) => {
+                          const tilt = [-4, 3, 5, -3][i % 4];
+                          return (
+                            <figure
+                              key={`${selectedSite.id}-${i}`}
+                              className="polaroid-drop"
+                              style={
+                                {
+                                  "--tilt": `${tilt}deg`,
+                                  animationDelay: `${i * 0.14}s`,
+                                  margin: 0,
+                                  padding: "6px 6px 4px",
+                                  background: "#fffdf7",
+                                  borderRadius: 2,
+                                  boxShadow: "0 4px 10px rgba(35,20,14,0.22)"
+                                } as React.CSSProperties
+                              }
+                            >
+                              <div style={{ height: 88, overflow: "hidden", background: "#d9cbba" }}>
+                                <img src={g.url} alt={g.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              </div>
+                              <figcaption
+                                style={{
+                                  fontFamily: "var(--font-serif)",
+                                  fontStyle: "italic",
+                                  fontSize: 10,
+                                  color: "var(--ink-secondary)",
+                                  textAlign: "center",
+                                  padding: "4px 2px 0",
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis"
+                                }}
+                              >
+                                {g.caption}
+                              </figcaption>
+                            </figure>
+                          );
+                        })}
                       </div>
 
                       <h4

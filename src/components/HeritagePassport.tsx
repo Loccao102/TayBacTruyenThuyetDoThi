@@ -108,6 +108,7 @@ export default function HeritagePassport({
             >
               {stamped ? (
                 <div
+                  className="passport-anim"
                   style={
                     {
                       "--r": `${rot}deg`,
