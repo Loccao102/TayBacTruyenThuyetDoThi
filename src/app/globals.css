@@ -230,21 +230,179 @@ button {
   clip-path: polygon(0 0, 100% 0, 100% 93%, 50% 100%, 0 93%);
 }
 
-/* Curled Paper Corner (Turn affordance) */
-.page-curl-corner {
+/* Enhanced tactile page corner curl (Right - Next Page) */
+.page-curl-corner-br {
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 52px;
-  height: 52px;
-  background: linear-gradient(135deg, transparent 50%, rgba(94, 69, 56, 0.15) 51%, #e5d7be 52%, #faf5eb 100%);
-  box-shadow: -3px -3px 8px rgba(0, 0, 0, 0.12);
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, transparent 50%, rgba(94, 69, 56, 0.2) 51%, #dfd0b5 52%, #faf5eb 100%);
+  box-shadow: -4px -4px 12px rgba(43, 27, 21, 0.14);
   cursor: pointer;
-  z-index: 25;
-  transition: transform 0.25s ease;
+  z-index: 37;
+  transition: all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 5px;
 }
-.page-curl-corner:hover {
-  transform: scale(1.18);
+.page-curl-corner-br:hover {
+  width: 72px;
+  height: 72px;
+  box-shadow: -7px -7px 18px rgba(43, 27, 21, 0.25);
+}
+
+/* Enhanced tactile page corner curl (Left - Prev Page) */
+.page-curl-corner-bl {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(-135deg, transparent 50%, rgba(94, 69, 56, 0.2) 51%, #dfd0b5 52%, #faf5eb 100%);
+  box-shadow: 4px -4px 12px rgba(43, 27, 21, 0.14);
+  cursor: pointer;
+  z-index: 37;
+  transition: all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 5px;
+}
+.page-curl-corner-bl:hover {
+  width: 72px;
+  height: 72px;
+  box-shadow: 7px -7px 18px rgba(43, 27, 21, 0.25);
+}
+
+/* 3D Animated Flipping Leaf with Physical Curvature */
+.flipping-page-leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  z-index: 45;
+  pointer-events: none;
+  transform-style: preserve-3d;
+}
+
+.flipping-page-leaf.flip-forward {
+  right: 0;
+  transform-origin: left center;
+  animation: flipLeafForward 0.45s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+}
+
+.flipping-page-leaf.flip-backward {
+  left: 0;
+  transform-origin: right center;
+  animation: flipLeafBackward 0.45s cubic-bezier(0.25, 0.9, 0.35, 1) forwards;
+}
+
+@keyframes flipLeafForward {
+  0% {
+    transform: rotateY(0deg);
+  }
+  40% {
+    transform: rotateY(-70deg) skewY(-1.2deg);
+    box-shadow: -18px 12px 35px rgba(28, 15, 10, 0.35);
+  }
+  75% {
+    transform: rotateY(-135deg) skewY(1.2deg);
+    box-shadow: 18px 12px 35px rgba(28, 15, 10, 0.35);
+  }
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes flipLeafBackward {
+  0% {
+    transform: rotateY(0deg);
+  }
+  40% {
+    transform: rotateY(70deg) skewY(1.2deg);
+    box-shadow: 18px 12px 35px rgba(28, 15, 10, 0.35);
+  }
+  75% {
+    transform: rotateY(135deg) skewY(-1.2deg);
+    box-shadow: -18px 12px 35px rgba(28, 15, 10, 0.35);
+  }
+  100% {
+    transform: rotateY(180deg);
+  }
+}
+
+.leaf-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  background: var(--paper-parchment);
+  background-image: radial-gradient(ellipse at 50% 50%, #faf5eb 0%, #f4ecdc 80%, #ebe0cb 100%);
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+.leaf-face.leaf-back {
+  transform: rotateY(180deg);
+  background-image: radial-gradient(ellipse at 50% 50%, #f6f0e2 0%, #ece1cd 80%, #e2d4bd 100%);
+}
+
+.leaf-fold-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(40, 22, 14, 0.28) 0%,
+    rgba(255, 255, 255, 0.32) 30%,
+    rgba(40, 22, 14, 0.15) 70%,
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.leaf-fold-gradient.reverse {
+  background: linear-gradient(
+    -90deg,
+    rgba(40, 22, 14, 0.28) 0%,
+    rgba(255, 255, 255, 0.32) 30%,
+    rgba(40, 22, 14, 0.15) 70%,
+    transparent 100%
+  );
+}
+
+/* Traveling Shadow on stationary pages during page turn */
+.flipping-shadow-sweep {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  pointer-events: none;
+  z-index: 38;
+}
+
+.flipping-shadow-sweep.sweep-left {
+  left: 0;
+  background: linear-gradient(90deg, transparent 40%, rgba(30, 16, 10, 0.25) 100%);
+  animation: shadowSweepLeft 0.45s ease-out forwards;
+}
+
+.flipping-shadow-sweep.sweep-right {
+  right: 0;
+  background: linear-gradient(-90deg, transparent 40%, rgba(30, 16, 10, 0.25) 100%);
+  animation: shadowSweepRight 0.45s ease-out forwards;
+}
+
+@keyframes shadowSweepLeft {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes shadowSweepRight {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* Real Cinnabar Woodblock Stamp (Artboard 11) */

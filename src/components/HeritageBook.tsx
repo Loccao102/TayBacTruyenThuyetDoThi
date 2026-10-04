@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   ChevronLeft,
   ChevronRight,
@@ -29,9 +29,12 @@ import {
   Info,
   Layers,
   Image as ImageIcon,
-  Video as VideoIcon
+  Video as VideoIcon,
+  Volume2
 } from "lucide-react";
 import { HERITAGE_SITES, SiteData, BADGES } from "@/data/heritage";
+import { playPageFlipSound, playStampSound, playWoodBlockSound } from "@/utils/audioEffects";
+import AudioGuidePlayer from "@/components/AudioGuidePlayer";
 
 interface HeritageBookProps {
   initialOpen?: boolean;
@@ -46,11 +49,21 @@ export default function HeritageBook({
   targetSiteId = null,
   targetTab = "overview"
 }: HeritageBookProps) {
+  // Page index:
+  // 0: Cover (Screen 2)
+  // 1: Introduction (Screen 3)
+  // 2: Heritage Map (Screen 4)
+  // 3: Site Detail (Screens 5 - 9, 11, 12)
+  // 4: Travel Journal & Badges (Screen 10)
+  // 5: Journey End (Screen 14)
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [isFlipping, setIsFlipping] = useState<"forward" | "backward" | null>(null);
+
+  // Selected site for detail view
   const [selectedSite, setSelectedSite] = useState<SiteData>(HERITAGE_SITES[0]);
   const [activeTab, setActiveTab] = useState<string>("overview");
 
-  // Filters
+  // Filters for Map
   const [provinceFilter, setProvinceFilter] = useState<string>("all");
   const [categoryFilters, setCategoryFilters] = useState<{ [key: string]: boolean }>({
     den: true,
@@ -87,17 +100,25 @@ export default function HeritageBook({
   ]);
   const [newCommentText, setNewCommentText] = useState("");
 
+  // Handle outside targeting
   useEffect(() => {
     if (targetSiteId) {
       const site = HERITAGE_SITES.find(s => s.id === targetSiteId);
       if (site) {
         setSelectedSite(site);
-        setCurrentPage(3);
+        flipToPage(3);
         if (targetTab) setActiveTab(targetTab);
         markAsExplored(site.id);
       }
     }
   }, [targetSiteId, targetTab]);
+
+  // Reset quiz and facts when switching monument
+  useEffect(() => {
+    setSelectedOption(null);
+    setQuizSubmitted(false);
+    setFactIndex(0);
+  }, [selectedSite.id]);
 
   const markAsExplored = (id: string) => {
     if (!exploredSites.includes(id)) {
@@ -109,12 +130,25 @@ export default function HeritageBook({
     }
   };
 
+  // 3D Realistic Page Flip with Synthesized Paper Rustle Sound
+  const flipToPage = (newPage: number) => {
+    if (newPage === currentPage || isFlipping) return;
+    const direction = newPage > currentPage ? "forward" : "backward";
+    setIsFlipping(direction);
+    playPageFlipSound();
+
+    setTimeout(() => {
+      setCurrentPage(newPage);
+      setIsFlipping(null);
+    }, 450);
+  };
+
   const handleNextPage = () => {
-    if (currentPage < 5) setCurrentPage(currentPage + 1);
+    if (currentPage < 5) flipToPage(currentPage + 1);
   };
 
   const handlePrevPage = () => {
-    if (currentPage > 0) setCurrentPage(currentPage - 1);
+    if (currentPage > 0) flipToPage(currentPage - 1);
   };
 
   const handleToggleCategory = (cat: string) => {
@@ -124,14 +158,14 @@ export default function HeritageBook({
   const handleSelectSiteFromMap = (site: SiteData) => {
     setSelectedSite(site);
     markAsExplored(site.id);
-    setCurrentPage(3);
+    flipToPage(3);
     setActiveTab("overview");
   };
 
   const handleAddComment = () => {
     if (!newCommentText.trim()) return;
     const newEntry = {
-      name: "Bạn đọc ẩn danh",
+      name: "Bạn đọc điền dã",
       date: "Hôm nay",
       rating: 5,
       text: newCommentText.trim()
@@ -140,6 +174,7 @@ export default function HeritageBook({
     setNewCommentText("");
   };
 
+  // Filtered sites for map
   const filteredSites = HERITAGE_SITES.filter(site => {
     const matchProvince = provinceFilter === "all" || site.province.toLowerCase().includes(provinceFilter.toLowerCase());
     const matchCategory = categoryFilters[site.category] === true;
@@ -151,29 +186,29 @@ export default function HeritageBook({
   });
 
   return (
-    <div className="real-book-container">
+    <div className="physical-book-wrapper">
       {/* Real Leather Shell with Physical Brass Corners */}
-      <div className="real-book-shell">
+      <div className="leather-exterior">
         {/* Brass Corner Clasps on 4 Corners */}
-        <div className="brass-corner top-left">
+        <div className="brass-corner-bracket tl">
           <svg viewBox="0 0 40 40" fill="none">
             <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#b58c49" />
             <circle cx="12" cy="12" r="3" fill="#664a1a" />
           </svg>
         </div>
-        <div className="brass-corner top-right">
+        <div className="brass-corner-bracket tr">
           <svg viewBox="0 0 40 40" fill="none">
             <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#b58c49" />
             <circle cx="12" cy="12" r="3" fill="#664a1a" />
           </svg>
         </div>
-        <div className="brass-corner bottom-left">
+        <div className="brass-corner-bracket bl">
           <svg viewBox="0 0 40 40" fill="none">
             <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#b58c49" />
             <circle cx="12" cy="12" r="3" fill="#664a1a" />
           </svg>
         </div>
-        <div className="brass-corner bottom-right">
+        <div className="brass-corner-bracket br">
           <svg viewBox="0 0 40 40" fill="none">
             <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#b58c49" />
             <circle cx="12" cy="12" r="3" fill="#664a1a" />
@@ -181,7 +216,7 @@ export default function HeritageBook({
         </div>
 
         {/* ====================================================================
-            SCREEN 2: MỞ SỔ (THE PHYSICAL EMBOSSED LEATHER BOOK COVER)
+            SCREEN 2: MỞ SỔ (THE EMBOSSED VINTAGE LEATHER COVER)
             ==================================================================== */}
         {currentPage === 0 && (
           <div
@@ -215,7 +250,7 @@ export default function HeritageBook({
             />
 
             {/* Mountain Crest Icon */}
-            <div style={{ color: "var(--accent-gold)", marginBottom: 18, opacity: 0.9 }}>
+            <div style={{ color: "var(--gold-bright)", marginBottom: 18, opacity: 0.9 }}>
               <Mountain size={52} strokeWidth={1.5} />
             </div>
 
@@ -223,7 +258,7 @@ export default function HeritageBook({
               style={{
                 fontFamily: "var(--font-serif)",
                 fontSize: "clamp(38px, 5.5vw, 56px)",
-                color: "var(--accent-gold-soft)",
+                color: "var(--gold-bright)",
                 letterSpacing: "0.16em",
                 margin: "0 0 6px",
                 textShadow: "0 2px 10px rgba(0,0,0,0.6)"
@@ -256,7 +291,7 @@ export default function HeritageBook({
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                color: "var(--accent-gold)",
+                color: "var(--gold-bright)",
                 margin: "0 auto 36px"
               }}
             >
@@ -289,19 +324,58 @@ export default function HeritageBook({
             THE REAL 2-PAGE SPREAD (SCREENS 3 - 12, 14)
             ==================================================================== */}
         {currentPage > 0 && (
-          <div className="real-book-spread">
+          <div
+            className="paper-spread-canvas"
+            style={{
+              transition: "transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease",
+              opacity: isFlipping ? 0.75 : 1,
+              transform: isFlipping === "forward" ? "rotateY(-3deg) scale(0.99)" : isFlipping === "backward" ? "rotateY(3deg) scale(0.99)" : "none"
+            }}
+          >
             {/* Center Gutter Spine 3D Curvature Shadow */}
-            <div className="spine-gutter-shadow" />
+            <div className="gutter-spine-shadow" />
 
             {/* Red Silk Ribbon Bookmark Hanging Across Center */}
             <div className="silk-ribbon-bookmark" />
 
-            {/* Curled Page Corner for Authentic Turn Affordance */}
-            <div
-              className="page-curl-corner"
-              onClick={handleNextPage}
-              title="Lật sang trang tiếp theo"
-            />
+            {/* 3D Animated Flipping Leaf with Physical Curvature */}
+            {isFlipping && (
+              <>
+                <div className={`flipping-page-leaf flip-${isFlipping}`}>
+                  <div className="leaf-face leaf-front">
+                    <div className="leaf-fold-gradient" />
+                  </div>
+                  <div className="leaf-face leaf-back">
+                    <div className="leaf-fold-gradient reverse" />
+                  </div>
+                </div>
+                <div
+                  className={`flipping-shadow-sweep ${
+                    isFlipping === "forward" ? "sweep-left" : "sweep-right"
+                  }`}
+                />
+              </>
+            )}
+
+            {/* Curled Page Corners for Authentic Turn Affordance on Both Sides */}
+            {currentPage < 5 && (
+              <div
+                className="page-curl-corner-br"
+                onClick={handleNextPage}
+                title="Lật sang trang tiếp theo (Click lật sách)"
+              >
+                <ChevronRight size={14} color="var(--ink-secondary)" style={{ opacity: 0.7 }} />
+              </div>
+            )}
+            {currentPage > 1 && (
+              <div
+                className="page-curl-corner-bl"
+                onClick={handlePrevPage}
+                title="Lật về trang trước (Click lật sách)"
+              >
+                <ChevronLeft size={14} color="var(--ink-secondary)" style={{ opacity: 0.7 }} />
+              </div>
+            )}
 
             {/* ==============================================================
                 PAGE 1: LỜI MỞ ĐẦU (SCREEN 3)
@@ -323,7 +397,7 @@ export default function HeritageBook({
                       style={{
                         fontFamily: "var(--font-serif)",
                         fontSize: "24px",
-                        color: "var(--accent-gold)",
+                        color: "var(--gold-bright)",
                         display: "block",
                         marginBottom: 8
                       }}
@@ -346,7 +420,7 @@ export default function HeritageBook({
                         fontFamily: "var(--font-serif)",
                         fontStyle: "italic",
                         fontSize: "16px",
-                        color: "var(--accent-gold)",
+                        color: "var(--gold-bright)",
                         marginBottom: 22,
                         lineHeight: 1.6
                       }}
@@ -386,7 +460,7 @@ export default function HeritageBook({
                     }}
                   >
                     <span style={{ fontSize: "11px", color: "var(--ink-muted)", fontStyle: "italic", display: "flex", alignItems: "center", gap: 6 }}>
-                      <Sparkles size={13} color="var(--accent-gold)" /> Hoa ban rừng Tây Bắc
+                      <Sparkles size={13} color="var(--gold-bright)" /> Hoa ban rừng Tây Bắc
                     </span>
                     <span style={{ fontSize: "11px", color: "var(--ink-muted)" }}>Lật trang để tiếp tục...</span>
                   </div>
@@ -434,7 +508,7 @@ export default function HeritageBook({
                           height: 58,
                           borderRadius: "50%",
                           background: "rgba(250, 246, 238, 0.92)",
-                          color: "var(--leather-brown)",
+                          color: "var(--leather-base)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -479,7 +553,7 @@ export default function HeritageBook({
             )}
 
             {/* ==============================================================
-                PAGE 2: BẢN ĐỒ DI SẢN (SCREEN 4)
+                PAGE 2: BẢN ĐỒ DI SẢN (SCREEN 4) - VỚI 8 DI TÍCH TIÊU BIỂU
                 ============================================================== */}
             {currentPage === 2 && (
               <>
@@ -505,7 +579,7 @@ export default function HeritageBook({
                       Bản đồ di sản
                     </h2>
                     <p style={{ fontSize: "12px", color: "var(--ink-muted)", marginBottom: 18 }}>
-                      Khám phá các điểm nổi bật của Tây Bắc
+                      Khám phá các điểm nổi bật của Tây Bắc ({filteredSites.length} di tích)
                     </p>
 
                     {/* Province Filter */}
@@ -527,13 +601,14 @@ export default function HeritageBook({
                           outline: "none"
                         }}
                       >
-                        <option value="all">Tất cả tỉnh thành</option>
-                        <option value="Vĩnh Phúc">Vĩnh Phúc</option>
-                        <option value="Yên Bái">Yên Bái</option>
-                        <option value="Lào Cai">Lào Cai</option>
-                        <option value="Điện Biên">Điện Biên</option>
-                        <option value="Sơn La">Sơn La</option>
-                        <option value="Lai Châu">Lai Châu</option>
+                        <option value="all">Tất cả 6 tỉnh Tây Bắc</option>
+                        <option value="Vĩnh Phúc">Vĩnh Phúc (Cửa ngõ Tây Thiên)</option>
+                        <option value="Yên Bái">Yên Bái (Mù Cang Chải)</option>
+                        <option value="Lào Cai">Lào Cai (Bắc Hà & Bảo Hà)</option>
+                        <option value="Điện Biên">Điện Biên (Chiến trường Điện Biên)</option>
+                        <option value="Sơn La">Sơn La (Nhà tù Sơn La)</option>
+                        <option value="Lai Châu">Lai Châu (Đèo Ô Quy Hồ)</option>
+                        <option value="Hòa Bình">Hòa Bình (Mai Châu)</option>
                       </select>
                     </div>
 
@@ -544,9 +619,9 @@ export default function HeritageBook({
                       </label>
                       <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                         {[
-                          { key: "den", label: "Đền", icon: <Landmark size={14} /> },
-                          { key: "chua", label: "Chùa", icon: <Landmark size={14} /> },
-                          { key: "khu-di-tich", label: "Khu di tích", icon: <Layers size={14} /> },
+                          { key: "den", label: "Đền / Miếu", icon: <Landmark size={14} /> },
+                          { key: "chua", label: "Chùa cổ", icon: <Landmark size={14} /> },
+                          { key: "khu-di-tich", label: "Khu di tích lịch sử", icon: <Layers size={14} /> },
                           { key: "danh-lam", label: "Danh lam thắng cảnh", icon: <Mountain size={14} /> }
                         ].map(c => (
                           <div
@@ -562,7 +637,7 @@ export default function HeritageBook({
                             }}
                           >
                             {categoryFilters[c.key] ? (
-                              <CheckSquare size={15} color="var(--leather-brown)" />
+                              <CheckSquare size={15} color="var(--leather-base)" />
                             ) : (
                               <Square size={15} color="rgba(94, 69, 56, 0.35)" />
                             )}
@@ -579,7 +654,7 @@ export default function HeritageBook({
                       <Search size={14} style={{ position: "absolute", left: 10, top: 10, color: "var(--ink-muted)" }} />
                       <input
                         type="text"
-                        placeholder="Tìm kiếm di tích..."
+                        placeholder="Tìm kiếm di tích, địa danh..."
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                         style={{
@@ -608,8 +683,8 @@ export default function HeritageBook({
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--accent-cinnabar)" }} />
-                      <span>Đã khám phá</span>
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: "var(--seal-cinnabar)" }} />
+                      <span>Đã khám phá ({exploredSites.length})</span>
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                       <span style={{ width: 8, height: 8, borderRadius: "50%", background: "rgba(94, 69, 56, 0.3)" }} />
@@ -654,20 +729,23 @@ export default function HeritageBook({
                     </svg>
 
                     {/* Regional Labels */}
-                    <div style={{ position: "absolute", top: "18%", left: "42%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
+                    <div style={{ position: "absolute", top: "18%", left: "45%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
                       Lào Cai
                     </div>
-                    <div style={{ position: "absolute", top: "25%", left: "18%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
+                    <div style={{ position: "absolute", top: "25%", left: "22%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
                       Lai Châu
                     </div>
                     <div style={{ position: "absolute", top: "50%", left: "15%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
                       Điện Biên
                     </div>
-                    <div style={{ position: "absolute", top: "62%", left: "42%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
+                    <div style={{ position: "absolute", top: "62%", left: "40%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
                       Sơn La
                     </div>
-                    <div style={{ position: "absolute", top: "38%", left: "55%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
+                    <div style={{ position: "absolute", top: "36%", left: "55%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
                       Yên Bái
+                    </div>
+                    <div style={{ position: "absolute", top: "72%", left: "65%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
+                      Hòa Bình
                     </div>
 
                     {/* Compass */}
@@ -682,11 +760,11 @@ export default function HeritageBook({
                         fontFamily: "var(--font-serif)"
                       }}
                     >
-                      <Compass size={20} color="var(--accent-cinnabar)" style={{ margin: "0 auto" }} />
+                      <Compass size={20} color="var(--seal-cinnabar)" style={{ margin: "0 auto" }} />
                       <span>BẮC</span>
                     </div>
 
-                    {/* Pins on the map */}
+                    {/* All 8 Pins on the map */}
                     {filteredSites.map(site => {
                       const isExplored = exploredSites.includes(site.id);
                       return (
@@ -708,7 +786,7 @@ export default function HeritageBook({
                               width: 24,
                               height: 24,
                               borderRadius: "50%",
-                              background: isExplored ? "var(--accent-cinnabar)" : "rgba(94, 69, 56, 0.45)",
+                              background: isExplored ? "var(--seal-cinnabar)" : "rgba(94, 69, 56, 0.45)",
                               border: "2px solid #fff",
                               boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
                               display: "flex",
@@ -748,7 +826,7 @@ export default function HeritageBook({
                           position: "absolute",
                           bottom: 16,
                           right: 16,
-                          width: 230,
+                          width: 240,
                           background: "var(--paper-ivory)",
                           borderRadius: 6,
                           border: "1px solid rgba(181, 140, 73, 0.4)",
@@ -763,8 +841,8 @@ export default function HeritageBook({
                         <span style={{ fontSize: "10px", color: "var(--ink-muted)", display: "block", marginBottom: 6 }}>
                           {mapHoverSite.province} · {mapHoverSite.categoryName}
                         </span>
-                        <div style={{ display: "flex", alignItems: "center", gap: 3, color: "var(--accent-gold)", fontSize: "11px", marginBottom: 8 }}>
-                          <Star size={12} fill="var(--accent-gold)" color="var(--accent-gold)" />
+                        <div style={{ display: "flex", alignItems: "center", gap: 3, color: "var(--gold-bright)", fontSize: "11px", marginBottom: 8 }}>
+                          <Star size={12} fill="var(--gold-bright)" color="var(--gold-bright)" />
                           <span>{mapHoverSite.rating} ({mapHoverSite.reviewsCount})</span>
                         </div>
                         <button
@@ -772,7 +850,7 @@ export default function HeritageBook({
                           style={{
                             width: "100%",
                             padding: "6px",
-                            background: "var(--leather-brown)",
+                            background: "var(--leather-base)",
                             color: "#fff",
                             borderRadius: 4,
                             fontSize: "10.5px",
@@ -806,7 +884,8 @@ export default function HeritageBook({
             )}
 
             {/* ==============================================================
-                PAGE 3: TRANG CHI TIẾT DI TÍCH (SCREENS 5, 6, 7, 8, 9, 11, 12)
+                PAGE 3: TRANG CHI TIẾT DI TÍCH (SCREENS 5 - 9, 11, 12)
+                VỚI AUDIO GUIDE PLAYER & BỘ CHỌN 8 DI TÍCH
                 ============================================================== */}
             {currentPage === 3 && (
               <>
@@ -822,21 +901,50 @@ export default function HeritageBook({
                   }}
                 >
                   <div>
-                    {/* Back to Map button */}
-                    <button
-                      onClick={() => setCurrentPage(2)}
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: 6,
-                        fontSize: "12px",
-                        color: "var(--ink-secondary)",
-                        marginBottom: 16,
-                        fontWeight: 600
-                      }}
-                    >
-                      <ArrowLeft size={14} /> Quay lại bản đồ
-                    </button>
+                    {/* Header Controls: Back & Site Switcher Dropdown */}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+                      <button
+                        onClick={() => flipToPage(2)}
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: 6,
+                          fontSize: "12px",
+                          color: "var(--ink-secondary)",
+                          fontWeight: 600
+                        }}
+                      >
+                        <ArrowLeft size={14} /> Quay lại bản đồ
+                      </button>
+
+                      {/* Site Selector Dropdown */}
+                      <select
+                        value={selectedSite.id}
+                        onChange={e => {
+                          const s = HERITAGE_SITES.find(site => site.id === e.target.value);
+                          if (s) {
+                            setSelectedSite(s);
+                            markAsExplored(s.id);
+                            setActiveTab("overview");
+                          }
+                        }}
+                        style={{
+                          fontSize: "11px",
+                          padding: "4px 8px",
+                          borderRadius: 4,
+                          background: "var(--paper-ivory)",
+                          border: "1px solid rgba(94, 69, 56, 0.2)",
+                          color: "var(--ink-primary)",
+                          outline: "none"
+                        }}
+                      >
+                        {HERITAGE_SITES.map(s => (
+                          <option key={s.id} value={s.id}>
+                            {s.title} ({s.province})
+                          </option>
+                        ))}
+                      </select>
+                    </div>
 
                     {/* Site Large Cover Photo */}
                     <div
@@ -873,7 +981,7 @@ export default function HeritageBook({
                         >
                           {selectedSite.title}
                         </h3>
-                        <p style={{ fontSize: "11px", color: "var(--accent-gold-soft)" }}>
+                        <p style={{ fontSize: "11px", color: "var(--gold-bright)" }}>
                           {selectedSite.province} · {selectedSite.categoryName} · {selectedSite.period}
                         </p>
                       </div>
@@ -886,7 +994,7 @@ export default function HeritageBook({
                         fontStyle: "italic",
                         fontSize: "14px",
                         color: "var(--ink-secondary)",
-                        borderLeft: "2px solid var(--accent-gold)",
+                        borderLeft: "2px solid var(--gold-primary)",
                         paddingLeft: 12,
                         margin: "12px 0 16px"
                       }}
@@ -901,14 +1009,19 @@ export default function HeritageBook({
                       <CheckCircle2 size={16} /> Đã khám phá
                     </div>
 
-                    <div className="stamp-explored">
+                    <div
+                      className="stamp-explored"
+                      onClick={() => playStampSound()}
+                      style={{ cursor: "pointer" }}
+                      title="Chạm để đóng dấu son gỗ"
+                    >
                       <Sparkles size={14} />
                       <span>ĐÃ KHÁM PHÁ</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Right Page: Tabs Content (Screens 5, 6, 7, 8, 9, 12) */}
+                {/* Right Page: Tabs Content with Spoken Audio Guide Player */}
                 <div
                   style={{
                     padding: "24px 32px",
@@ -918,6 +1031,12 @@ export default function HeritageBook({
                     overflowY: "auto"
                   }}
                 >
+                  {/* Dedicated Spoken Audio Guide Player (Item 4) */}
+                  <AudioGuidePlayer
+                    siteTitle={selectedSite.title}
+                    narrationText={selectedSite.audioNarration}
+                  />
+
                   {/* Tab Navigation Buttons (Screen 5) */}
                   <div
                     style={{
@@ -926,7 +1045,7 @@ export default function HeritageBook({
                       gap: 4,
                       borderBottom: "1px solid rgba(94, 69, 56, 0.16)",
                       paddingBottom: 8,
-                      marginBottom: 20,
+                      marginBottom: 16,
                       overflowX: "auto"
                     }}
                   >
@@ -940,13 +1059,16 @@ export default function HeritageBook({
                     ].map(tab => (
                       <button
                         key={tab.key}
-                        onClick={() => setActiveTab(tab.key)}
+                        onClick={() => {
+                          playWoodBlockSound();
+                          setActiveTab(tab.key);
+                        }}
                         style={{
                           padding: "6px 10px",
                           borderRadius: 6,
                           fontSize: "11px",
                           fontWeight: activeTab === tab.key ? 700 : 500,
-                          color: activeTab === tab.key ? "var(--leather-brown)" : "var(--ink-muted)",
+                          color: activeTab === tab.key ? "var(--leather-base)" : "var(--ink-muted)",
                           background: activeTab === tab.key ? "rgba(94, 69, 56, 0.08)" : "transparent",
                           whiteSpace: "nowrap",
                           display: "flex",
@@ -969,7 +1091,7 @@ export default function HeritageBook({
                           fontFamily: "var(--font-serif)",
                           fontSize: "20px",
                           color: "var(--ink-primary)",
-                          marginBottom: 12
+                          marginBottom: 10
                         }}
                       >
                         Câu chuyện di tích
@@ -989,7 +1111,7 @@ export default function HeritageBook({
                           fontSize: "13px",
                           color: "var(--ink-secondary)",
                           lineHeight: 1.8,
-                          marginBottom: 20
+                          marginBottom: 18
                         }}
                       >
                         {selectedSite.overview.description}
@@ -1000,10 +1122,10 @@ export default function HeritageBook({
                           fontFamily: "var(--font-serif)",
                           fontStyle: "italic",
                           fontSize: "14px",
-                          color: "var(--accent-gold)",
+                          color: "var(--gold-primary)",
                           textAlign: "center",
-                          margin: "24px 0",
-                          padding: "16px",
+                          margin: "20px 0",
+                          padding: "14px",
                           borderTop: "1px dashed rgba(94, 69, 56, 0.2)",
                           borderBottom: "1px dashed rgba(94, 69, 56, 0.2)"
                         }}
@@ -1038,7 +1160,7 @@ export default function HeritageBook({
                           gap: 6
                         }}
                       >
-                        <ImageIcon size={16} color="var(--accent-gold)" /> Hình ảnh di tích
+                        <ImageIcon size={16} color="var(--gold-primary)" /> Hình ảnh di tích
                       </h4>
                       <div
                         style={{
@@ -1074,7 +1196,7 @@ export default function HeritageBook({
                           gap: 6
                         }}
                       >
-                        <VideoIcon size={16} color="var(--accent-cinnabar)" /> Phim tài liệu
+                        <VideoIcon size={16} color="var(--seal-cinnabar)" /> Phim tài liệu
                       </h4>
                       <div
                         style={{
@@ -1105,7 +1227,7 @@ export default function HeritageBook({
                               height: 48,
                               borderRadius: "50%",
                               background: "rgba(250, 246, 238, 0.92)",
-                              color: "var(--leather-brown)",
+                              color: "var(--leather-base)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
@@ -1223,14 +1345,13 @@ export default function HeritageBook({
                     <div>
                       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <Pencil size={15} color="var(--accent-cinnabar)" />
-                          <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--accent-cinnabar)", textTransform: "uppercase" }}>
-                            Thử thách
+                          <Pencil size={15} color="var(--seal-cinnabar)" />
+                          <span style={{ fontSize: "11px", fontWeight: 700, color: "var(--seal-cinnabar)", textTransform: "uppercase" }}>
+                            Thử thách tri thức
                           </span>
-                          <span style={{ fontSize: "11px", color: "var(--ink-muted)", marginLeft: 6 }}>Câu 2 / 3</span>
                         </div>
                         <div style={{ width: 100, height: 4, background: "rgba(94, 69, 56, 0.15)", borderRadius: 2 }}>
-                          <div style={{ width: "66%", height: "100%", background: "var(--accent-gold)", borderRadius: 2 }} />
+                          <div style={{ width: "100%", height: "100%", background: "var(--gold-primary)", borderRadius: 2 }} />
                         </div>
                       </div>
 
@@ -1249,15 +1370,20 @@ export default function HeritageBook({
                         {selectedSite.quiz.options.map((opt, i) => (
                           <div
                             key={i}
-                            onClick={() => !quizSubmitted && setSelectedOption(i)}
+                            onClick={() => {
+                              if (!quizSubmitted) {
+                                playWoodBlockSound();
+                                setSelectedOption(i);
+                              }
+                            }}
                             style={{
                               padding: "10px 14px",
                               borderRadius: 6,
                               background:
-                                selectedOption === i ? "var(--accent-gold-pale)" : "var(--paper-ivory)",
+                                selectedOption === i ? "var(--gold-pale)" : "var(--paper-ivory)",
                               border:
                                 selectedOption === i
-                                  ? "1.5px solid var(--accent-gold)"
+                                  ? "1.5px solid var(--gold-primary)"
                                   : "1px solid rgba(94, 69, 56, 0.18)",
                               display: "flex",
                               alignItems: "center",
@@ -1292,6 +1418,9 @@ export default function HeritageBook({
                               setQuizSubmitted(true);
                               if (selectedOption === selectedSite.quiz.correctIndex) {
                                 setQuizScore(quizScore + 1);
+                                playStampSound();
+                              } else {
+                                playWoodBlockSound();
                               }
                             }
                           }}
@@ -1302,27 +1431,49 @@ export default function HeritageBook({
                           <span>Kiểm tra đáp án</span>
                         </button>
                       ) : (
-                        <div
-                          style={{
-                            padding: "12px",
-                            borderRadius: 6,
-                            background:
-                              selectedOption === selectedSite.quiz.correctIndex
-                                ? "var(--pastel-geo-bg)"
-                                : "var(--pastel-history-bg)",
-                            border: `1px solid ${
-                              selectedOption === selectedSite.quiz.correctIndex
-                                ? "var(--pastel-geo-border)"
-                                : "var(--pastel-history-border)"
-                            }`,
-                            fontSize: "12px",
-                            lineHeight: 1.6
-                          }}
-                        >
-                          <strong>
-                            {selectedOption === selectedSite.quiz.correctIndex ? "Xuất sắc! " : "Chưa chính xác! "}
-                          </strong>
-                          {selectedSite.quiz.explanation}
+                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                          <div
+                            style={{
+                              padding: "12px 14px",
+                              borderRadius: 6,
+                              background:
+                                selectedOption === selectedSite.quiz.correctIndex
+                                  ? "var(--pastel-geo-bg)"
+                                  : "var(--pastel-history-bg)",
+                              border: `1px solid ${
+                                selectedOption === selectedSite.quiz.correctIndex
+                                  ? "var(--pastel-geo-border)"
+                                  : "var(--pastel-history-border)"
+                              }`,
+                              fontSize: "12.5px",
+                              lineHeight: 1.65
+                            }}
+                          >
+                            <strong>
+                              {selectedOption === selectedSite.quiz.correctIndex ? "Xuất sắc! " : "Chưa chính xác! "}
+                            </strong>
+                            {selectedSite.quiz.explanation}
+                          </div>
+                          <button
+                            onClick={() => {
+                              playWoodBlockSound();
+                              setSelectedOption(null);
+                              setQuizSubmitted(false);
+                            }}
+                            style={{
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              color: "var(--ink-secondary)",
+                              background: "rgba(94, 69, 56, 0.08)",
+                              border: "1px solid rgba(94, 69, 56, 0.15)",
+                              borderRadius: 6,
+                              padding: "6px 12px",
+                              cursor: "pointer",
+                              alignSelf: "flex-start"
+                            }}
+                          >
+                            ↻ Thử lại câu hỏi này
+                          </button>
                         </div>
                       )}
                     </div>
@@ -1341,7 +1492,7 @@ export default function HeritageBook({
                           position: "relative"
                         }}
                       >
-                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10, color: "var(--accent-gold)" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10, color: "var(--gold-primary)" }}>
                           <Lightbulb size={16} />
                           <span style={{ fontSize: "12px", fontWeight: 700, textTransform: "uppercase" }}>
                             Bạn có biết?
@@ -1390,7 +1541,7 @@ export default function HeritageBook({
                         </h4>
                         <div style={{ display: "flex", gap: 2 }}>
                           {[1, 2, 3, 4, 5].map(st => (
-                            <Star key={st} size={13} fill="var(--accent-gold)" color="var(--accent-gold)" />
+                            <Star key={st} size={13} fill="var(--gold-bright)" color="var(--gold-bright)" />
                           ))}
                         </div>
                         <span style={{ fontSize: "12px", color: "var(--ink-muted)" }}>
@@ -1447,7 +1598,7 @@ export default function HeritageBook({
                             </div>
                             <div style={{ display: "flex", gap: 2, marginBottom: 4 }}>
                               {[...Array(c.rating)].map((_, rIdx) => (
-                                <Star key={rIdx} size={11} fill="var(--accent-gold)" color="var(--accent-gold)" />
+                                <Star key={rIdx} size={11} fill="var(--gold-bright)" color="var(--gold-bright)" />
                               ))}
                             </div>
                             <p style={{ color: "var(--ink-secondary)", margin: 0, lineHeight: 1.5 }}>{c.text}</p>
@@ -1469,13 +1620,13 @@ export default function HeritageBook({
                     }}
                   >
                     <button
-                      onClick={() => setCurrentPage(2)}
+                      onClick={() => flipToPage(2)}
                       style={{ fontSize: "11px", color: "var(--ink-secondary)", display: "flex", alignItems: "center", gap: 4 }}
                     >
                       <ChevronLeft size={14} /> Xem bản đồ
                     </button>
                     <button
-                      onClick={() => setCurrentPage(4)}
+                      onClick={() => flipToPage(4)}
                       style={{ fontSize: "11px", color: "var(--ink-secondary)", display: "flex", alignItems: "center", gap: 4 }}
                     >
                       Sổ tay hành trình & Huy hiệu <ChevronRight size={14} />
@@ -1512,7 +1663,7 @@ export default function HeritageBook({
                         gap: 8
                       }}
                     >
-                      <BookOpen size={24} color="var(--accent-gold)" /> Sổ tay hành trình
+                      <BookOpen size={24} color="var(--gold-primary)" /> Sổ tay hành trình
                     </h2>
                     <p style={{ fontSize: "12px", color: "var(--ink-muted)", marginBottom: 20 }}>
                       Đánh dấu những điểm đến bạn đã khám phá.
@@ -1535,13 +1686,13 @@ export default function HeritageBook({
                           fontFamily: "var(--font-serif)",
                           fontSize: "30px",
                           fontWeight: 700,
-                          color: "var(--accent-cinnabar)"
+                          color: "var(--seal-cinnabar)"
                         }}
                       >
-                        {exploredSites.length} / {HERITAGE_SITES.length * 5}
+                        {exploredSites.length} / {HERITAGE_SITES.length}
                       </div>
                       <span style={{ fontSize: "11px", color: "var(--ink-secondary)" }}>
-                        điểm đã khám phá trên toàn nẻo đường Tây Bắc
+                        di tích tiêu biểu đã được mở khóa và lưu dấu
                       </span>
                     </div>
 
@@ -1560,15 +1711,15 @@ export default function HeritageBook({
                         gap: 8
                       }}
                     >
-                      <Compass size={32} color="var(--accent-gold)" />
+                      <Compass size={32} color="var(--gold-primary)" />
                       <span style={{ fontSize: "12px", fontStyle: "italic", color: "var(--ink-muted)" }}>
-                        Bản đồ hành trình cá nhân
+                        Bản đồ hành trình cá nhân ({exploredSites.length} dấu mốc son)
                       </span>
                     </div>
                   </div>
 
                   <button
-                    onClick={() => setCurrentPage(2)}
+                    onClick={() => flipToPage(2)}
                     className="btn-warm"
                     style={{ alignSelf: "flex-start", padding: "8px 18px", fontSize: "12px" }}
                   >
@@ -1598,7 +1749,7 @@ export default function HeritageBook({
                         gap: 8
                       }}
                     >
-                      <Award size={22} color="var(--accent-gold)" /> Danh hiệu
+                      <Award size={22} color="var(--gold-primary)" /> Danh hiệu
                     </h3>
 
                     <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
@@ -1615,7 +1766,7 @@ export default function HeritageBook({
                               borderRadius: 8,
                               background: isUnlocked ? "var(--paper-ivory)" : "rgba(236, 225, 204, 0.4)",
                               border: isUnlocked
-                                ? "1.5px solid var(--accent-gold)"
+                                ? "1.5px solid var(--gold-primary)"
                                 : "1px solid rgba(94, 69, 56, 0.15)",
                               opacity: isUnlocked ? 1 : 0.6
                             }}
@@ -1626,11 +1777,11 @@ export default function HeritageBook({
                                 height: 44,
                                 borderRadius: "50%",
                                 background: isUnlocked ? "radial-gradient(circle, #fbf4e6, #ebd7ad)" : "#d9cbba",
-                                border: "1px solid var(--accent-gold)",
+                                border: "1px solid var(--gold-primary)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
-                                color: isUnlocked ? "var(--leather-brown)" : "var(--ink-muted)"
+                                color: isUnlocked ? "var(--leather-base)" : "var(--ink-muted)"
                               }}
                             >
                               {idx === 0 ? <Compass size={22} /> : idx === 1 ? <Scroll size={22} /> : <Crown size={22} />}
@@ -1639,7 +1790,7 @@ export default function HeritageBook({
                             <div>
                               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                                 <strong style={{ fontSize: "14px", color: "var(--ink-primary)" }}>{b.name}</strong>
-                                <span style={{ fontSize: "11px", color: "var(--accent-cinnabar)", fontWeight: 600 }}>
+                                <span style={{ fontSize: "11px", color: "var(--seal-cinnabar)", fontWeight: 600 }}>
                                   ({b.reqPoints} điểm)
                                 </span>
                               </div>
@@ -1683,7 +1834,7 @@ export default function HeritageBook({
                   background: "radial-gradient(circle at 50% 40%, #faf3e6 0%, #ebe0cd 100%)"
                 }}
               >
-                <div style={{ display: "flex", gap: 8, color: "var(--accent-gold)", marginBottom: 16 }}>
+                <div style={{ display: "flex", gap: 8, color: "var(--gold-primary)", marginBottom: 16 }}>
                   <Sparkles size={20} />
                   <Mountain size={20} />
                   <Sparkles size={20} />
@@ -1716,14 +1867,14 @@ export default function HeritageBook({
 
                 <div style={{ display: "flex", gap: 14 }}>
                   <button
-                    onClick={() => setCurrentPage(2)}
+                    onClick={() => flipToPage(2)}
                     className="btn-warm"
                   >
                     <Compass size={16} />
                     <span>Xem lại bản đồ di sản</span>
                   </button>
                   <button
-                    onClick={() => setCurrentPage(0)}
+                    onClick={() => flipToPage(0)}
                     className="btn-gold"
                   >
                     <span>Đóng sổ về trang đầu ↻</span>
@@ -1748,7 +1899,7 @@ export default function HeritageBook({
           >
             <button
               onClick={handlePrevPage}
-              disabled={currentPage === 0}
+              disabled={currentPage === 0 || !!isFlipping}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -1766,7 +1917,7 @@ export default function HeritageBook({
 
             <button
               onClick={handleNextPage}
-              disabled={currentPage === 5}
+              disabled={currentPage === 5 || !!isFlipping}
               style={{
                 display: "flex",
                 alignItems: "center",
