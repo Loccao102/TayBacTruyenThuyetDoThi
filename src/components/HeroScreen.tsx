@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ArrowRight, Menu, Globe, Volume2 } from "lucide-react";
+import { ArrowRight, BookOpen, Menu, Globe, Volume2, Sparkles, Compass } from "lucide-react";
 
 interface HeroScreenProps {
   onOpenBook: () => void;
@@ -9,7 +9,6 @@ interface HeroScreenProps {
 
 export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
   const [lang, setLang] = useState<"VI" | "EN">("VI");
-  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <section
@@ -49,7 +48,7 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
         }}
       />
 
-      {/* Top Header Bar (Screen 1) */}
+      {/* Top Header Bar (Artboard 1) */}
       <header
         style={{
           position: "relative",
@@ -62,11 +61,11 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
       >
         {/* Brand */}
         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ color: "var(--accent-gold)", fontSize: "18px" }}>✦</span>
+          <span style={{ color: "var(--gold-bright)", fontSize: "18px" }}>✦</span>
           <span
             style={{
               fontFamily: "var(--font-serif)",
-              fontSize: "16px",
+              fontSize: "17px",
               letterSpacing: "0.2em",
               fontWeight: 700
             }}
@@ -75,8 +74,8 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
           </span>
         </div>
 
-        {/* Right Controls: VI | EN & Menu Button */}
-        <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
+        {/* Right Controls: VI | EN & Book CTA */}
+        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <div
             style={{
               display: "flex",
@@ -92,7 +91,7 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
               onClick={() => setLang("VI")}
               style={{
                 fontWeight: lang === "VI" ? 700 : 400,
-                color: lang === "VI" ? "var(--accent-gold-soft)" : "inherit"
+                color: lang === "VI" ? "var(--gold-bright)" : "inherit"
               }}
             >
               VI
@@ -102,7 +101,7 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
               onClick={() => setLang("EN")}
               style={{
                 fontWeight: lang === "EN" ? 700 : 400,
-                color: lang === "EN" ? "var(--accent-gold-soft)" : "inherit"
+                color: lang === "EN" ? "var(--gold-bright)" : "inherit"
               }}
             >
               EN
@@ -110,26 +109,17 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
           </div>
 
           <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            title="Mục lục cuốn sổ"
-            aria-label="Menu"
-            style={{
-              width: 38,
-              height: 38,
-              borderRadius: "50%",
-              background: "rgba(255,255,255,0.08)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff"
-            }}
+            onClick={onOpenBook}
+            className="btn-warm"
+            style={{ padding: "8px 18px", fontSize: "12px" }}
           >
-            <Menu size={18} />
+            <BookOpen size={14} />
+            <span>Mở sổ</span>
           </button>
         </div>
       </header>
 
-      {/* Hero Typography & Content (Screen 1) */}
+      {/* Hero Typography & Content (Artboard 1) */}
       <div
         style={{
           position: "relative",
@@ -145,7 +135,7 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
             color: "rgba(250, 246, 238, 0.9)",
             display: "block",
             lineHeight: 1.1,
-            letterSpacing: "0.05em"
+            letterSpacing: "0.04em"
           }}
         >
           Khám phá
@@ -154,10 +144,10 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
         <h1
           style={{
             fontFamily: "var(--font-serif)",
-            fontSize: "clamp(54px, 8vw, 96px)",
+            fontSize: "clamp(56px, 8.5vw, 98px)",
             fontWeight: 700,
             color: "#fff8ee",
-            letterSpacing: "-0.01em",
+            letterSpacing: "-0.015em",
             lineHeight: 0.95,
             margin: "4px 0 10px"
           }}
@@ -170,7 +160,7 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
             fontFamily: "var(--font-serif)",
             fontStyle: "italic",
             fontSize: "clamp(20px, 3vw, 32px)",
-            color: "var(--accent-gold-soft)",
+            color: "var(--gold-bright)",
             display: "block",
             letterSpacing: "0.08em",
             marginBottom: 24
@@ -183,7 +173,7 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
           style={{
             fontSize: "clamp(14px, 1.6vw, 17px)",
             color: "#e6d5bf",
-            lineHeight: 1.7,
+            lineHeight: 1.75,
             maxWidth: 480,
             marginBottom: 36
           }}
@@ -195,17 +185,18 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
           onClick={onOpenBook}
           className="btn-warm"
           style={{
-            padding: "14px 32px",
+            padding: "14px 34px",
             fontSize: "14px",
-            letterSpacing: "0.1em"
+            letterSpacing: "0.08em"
           }}
         >
+          <BookOpen size={16} />
           <span>MỞ SỔ</span>
           <ArrowRight size={16} />
         </button>
       </div>
 
-      {/* Bottom Footer Note (Screen 1) */}
+      {/* Bottom Footer Note (Artboard 1) */}
       <div
         style={{
           position: "relative",
@@ -221,7 +212,10 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
           paddingTop: 16
         }}
       >
-        <div>Tây Bắc — Nơi cội nguồn kỳ vĩ</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <Compass size={14} color="var(--gold-bright)" />
+          <span>Tây Bắc — Nơi cội nguồn kỳ vĩ</span>
+        </div>
         <div style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase" }}>
           Nhật ký điền dã · 2026
         </div>

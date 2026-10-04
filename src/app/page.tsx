@@ -5,7 +5,16 @@ import HeroScreen from "@/components/HeroScreen";
 import HeritageBook from "@/components/HeritageBook";
 import AiNana from "@/components/AiNana";
 import AudioSoundscape from "@/components/AudioSoundscape";
-import { BookOpen, Home } from "lucide-react";
+import {
+  BookOpen,
+  Home,
+  MapPin,
+  Landmark,
+  Pencil,
+  Award,
+  Compass,
+  Sparkles
+} from "lucide-react";
 
 export default function HomePage() {
   const [viewMode, setViewMode] = useState<"hero" | "book">("hero");
@@ -20,6 +29,7 @@ export default function HomePage() {
 
   const handleOpenMap = () => {
     setViewMode("book");
+    // HeritageBook handles mapping internally
   };
 
   const handleOpenQuiz = (siteId: string) => {
@@ -30,35 +40,37 @@ export default function HomePage() {
 
   return (
     <main style={{ minHeight: "100vh", position: "relative" }}>
-      {/* View 1: Hero Screen (Artboard 1) */}
+      {/* View 1: Hero Screen (Màn hình mở đầu - Artboard 1) */}
       {viewMode === "hero" && (
         <HeroScreen onOpenBook={() => handleOpenBook()} />
       )}
 
-      {/* View 2: Heritage Book (Artboards 2 through 12, 14) */}
+      {/* View 2: Physical Heritage Book Spread (Artboards 2 - 12, 14) */}
       {viewMode === "book" && (
         <div
           style={{
             minHeight: "100vh",
-            background: "radial-gradient(circle at 50% 40%, #301b15 0%, #1a0d0a 60%, #0d0604 100%)",
-            padding: "40px 4vw 80px",
+            background: "radial-gradient(circle at 50% 38%, #2e1a14 0%, #180d0a 65%, #0d0604 100%)",
+            padding: "36px 4vw 80px",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center"
           }}
         >
-          {/* Top navigation helper bar */}
+          {/* Folio Top Bar Navigation */}
           <div
             style={{
               width: "100%",
-              maxWidth: 1200,
+              maxWidth: 1220,
               display: "flex",
               alignItems: "center",
               justifyContent: "space-between",
-              marginBottom: 16,
-              color: "rgba(250, 246, 238, 0.75)",
-              fontSize: "12px"
+              marginBottom: 18,
+              color: "rgba(250, 246, 238, 0.8)",
+              fontSize: "12px",
+              flexWrap: "wrap",
+              gap: 12
             }}
           >
             <button
@@ -67,26 +79,41 @@ export default function HomePage() {
                 display: "flex",
                 alignItems: "center",
                 gap: 6,
-                padding: "6px 12px",
+                padding: "6px 14px",
                 borderRadius: 9999,
                 background: "rgba(255,255,255,0.08)",
                 color: "var(--paper-ivory)",
-                fontSize: "11px"
+                fontSize: "11px",
+                transition: "background 0.2s ease"
               }}
             >
               <Home size={14} /> Về màn hình mở đầu
             </button>
 
-            <span style={{ fontFamily: "var(--font-serif)", letterSpacing: "0.15em", color: "var(--accent-gold-soft)" }}>
-              ✦ TÂY BẮC — NHẬT KÝ DI SẢN ✦
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ color: "var(--gold-bright)", fontSize: "14px" }}>✦</span>
+              <span
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  letterSpacing: "0.18em",
+                  color: "var(--gold-bright)",
+                  fontWeight: 600,
+                  fontSize: "13px"
+                }}
+              >
+                TÂY BẮC — NHẬT KÝ DI SẢN
+              </span>
+              <span style={{ color: "var(--gold-bright)", fontSize: "14px" }}>✦</span>
+            </div>
 
-            <span style={{ fontSize: "11px", opacity: 0.7 }}>
-              Ấn bản tương tác 2026
-            </span>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <span style={{ fontSize: "11px", opacity: 0.7 }}>
+                Ấn bản điền dã 2026
+              </span>
+            </div>
           </div>
 
-          {/* The Interactive Heritage Book */}
+          {/* The Physical Heritage Book Component */}
           <HeritageBook
             targetSiteId={targetSiteId}
             targetTab={targetTab}
@@ -95,10 +122,10 @@ export default function HomePage() {
         </div>
       )}
 
-      {/* Ambient Flute & Mountain Wind Soundscape */}
+      {/* Generative Ambient Flute & Mountain Air Soundscape */}
       <AudioSoundscape />
 
-      {/* AI Nana Virtual Guide with Roaming Tour Mode */}
+      {/* Autonomous AI Nana Virtual Guide (With Roaming Tour Mode) */}
       <AiNana
         onOpenSite={(siteId) => handleOpenBook(siteId, "overview")}
         onOpenMap={handleOpenMap}
