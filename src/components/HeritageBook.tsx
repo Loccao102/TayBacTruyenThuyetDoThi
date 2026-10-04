@@ -40,6 +40,8 @@ import { EthnicBrocadeBorder, EthnicDivider, EthnicEmblem } from "@/components/E
 import HeritageVideoModal from "@/components/HeritageVideoModal";
 import HeritageMapCanvas from "@/components/HeritageMapCanvas";
 import HeritagePassport from "@/components/HeritagePassport";
+import PaperImage from "@/components/PaperImage";
+import TiltCard from "@/components/TiltCard";
 
 interface HeritageBookProps {
   initialOpen?: boolean;
@@ -544,7 +546,7 @@ export default function HeritageBook({
                       border: "6px solid #f6eee0"
                     }}
                   >
-                    <img
+                    <PaperImage
                       src="https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=1000"
                       alt="Tây Bắc đại ngàn"
                       style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -866,7 +868,7 @@ export default function HeritageBook({
                     <EthnicBrocadeBorder variant="hmong-cross" height={13} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" style={{ marginBottom: 12, opacity: 0.85 }} />
 
                     {/* Site Large Cover Photo */}
-                    <div
+                    <TiltCard
                       style={{
                         position: "relative",
                         height: 380,
@@ -877,7 +879,7 @@ export default function HeritageBook({
                         marginBottom: 16
                       }}
                     >
-                      <img
+                      <PaperImage
                         src={selectedSite.coverImage}
                         alt={selectedSite.title}
                         style={{ width: "100%", height: "100%", objectFit: "cover" }}
@@ -904,7 +906,7 @@ export default function HeritageBook({
                           {selectedSite.province} · {selectedSite.categoryName} · {selectedSite.period}
                         </p>
                       </div>
-                    </div>
+                    </TiltCard>
 
                     {/* Quote */}
                     <div
@@ -1110,8 +1112,8 @@ export default function HeritageBook({
                                 } as React.CSSProperties
                               }
                             >
-                              <div style={{ height: 88, overflow: "hidden", background: "#d9cbba" }}>
-                                <img src={g.url} alt={g.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                              <div style={{ position: "relative", height: 88, overflow: "hidden", background: "#d9cbba" }}>
+                                <PaperImage src={g.url} alt={g.caption} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                               </div>
                               <figcaption
                                 style={{
@@ -1162,7 +1164,7 @@ export default function HeritageBook({
                           boxShadow: "0 4px 14px rgba(0,0,0,0.25)"
                         }}
                       >
-                        <img
+                        <PaperImage
                           src={selectedSite.video.thumbnail}
                           alt={selectedSite.video.title}
                           style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.75, transition: "transform 0.3s ease" }}
@@ -1327,6 +1329,13 @@ export default function HeritageBook({
                         {selectedSite.quiz.options.map((opt, i) => (
                           <div
                             key={i}
+                            className={`quiz-option${
+                              quizSubmitted && i === selectedSite.quiz.correctIndex
+                                ? " quiz-engraved"
+                                : quizSubmitted && i === selectedOption
+                                ? " quiz-wrong"
+                                : ""
+                            }`}
                             onClick={() => {
                               if (!quizSubmitted) {
                                 playWoodBlockSound();
@@ -1460,8 +1469,8 @@ export default function HeritageBook({
                           {selectedSite.facts[factIndex]?.content || selectedSite.facts[0]?.content}
                         </p>
 
-                        <div style={{ height: 130, borderRadius: 4, overflow: "hidden", marginBottom: 14 }}>
-                          <img
+                        <div style={{ position: "relative", height: 130, borderRadius: 4, overflow: "hidden", marginBottom: 14 }}>
+                          <PaperImage
                             src={selectedSite.facts[factIndex]?.image || selectedSite.facts[0]?.image}
                             alt="Fact di sản"
                             style={{ width: "100%", height: "100%", objectFit: "cover" }}

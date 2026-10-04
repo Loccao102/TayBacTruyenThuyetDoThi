@@ -1,5 +1,6 @@
 "use client";
 
+import PaperImage from "@/components/PaperImage";
 import React, { useState } from "react";
 import {
   Compass,
@@ -540,7 +541,7 @@ export default function HeritageMapCanvas({
           }}
         >
           <div style={{ position: "relative", height: 100, borderRadius: 5, overflow: "hidden", marginBottom: 8 }}>
-            <img
+            <PaperImage
               src={hoveredSite.coverImage}
               alt={hoveredSite.title}
               style={{ width: "100%", height: "100%", objectFit: "cover" }}

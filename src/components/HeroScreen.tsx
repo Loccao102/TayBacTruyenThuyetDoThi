@@ -429,7 +429,7 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
 
           {/* Giant Metallic Shimmer Headline */}
           <h1
-            className="hero-gold-title"
+            className="hero-gold-title ink-bleed"
             style={{
               fontFamily: "var(--font-serif)",
               fontSize: "clamp(62px, 8.8vw, 110px)",
