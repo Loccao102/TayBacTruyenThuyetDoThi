@@ -161,3 +161,88 @@ export function playWoodBlockSound() {
   osc.start(now);
   osc.stop(now + 0.06);
 }
+
+/**
+ * Heavy leather spine flexing and antique book opening creak
+ */
+export function playBookOpenCreakSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+
+  // 1. Low creaking leather resonance
+  const osc = ctx.createOscillator();
+  osc.type = "sawtooth";
+  osc.frequency.setValueAtTime(85, now);
+  osc.frequency.linearRampToValueAtTime(140, now + 0.18);
+  osc.frequency.exponentialRampToValueAtTime(55, now + 0.55);
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = "bandpass";
+  filter.frequency.setValueAtTime(280, now);
+  filter.frequency.linearRampToValueAtTime(520, now + 0.22);
+  filter.frequency.exponentialRampToValueAtTime(180, now + 0.55);
+  filter.Q.setValueAtTime(4.0, now);
+
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.linearRampToValueAtTime(0.12, now + 0.08);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.55);
+
+  // 2. Crisp page flutter rustle
+  setTimeout(() => {
+    playPageFlipSound();
+  }, 120);
+}
+
+/**
+ * Ethereal mountain mist whoosh sound (soft highland wind sweeping over mountain passes)
+ */
+export function playMistWhooshSound() {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const duration = 1.1;
+
+  const bufferSize = Math.floor(ctx.sampleRate * duration);
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+
+  // Pink noise curve
+  let b0 = 0, b1 = 0, b2 = 0;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    b0 = 0.99886 * b0 + white * 0.0555179;
+    b1 = 0.99332 * b1 + white * 0.0750759;
+    b2 = 0.96900 * b2 + white * 0.1538520;
+    data[i] = (b0 + b1 + b2) * 0.22;
+  }
+
+  const noise = ctx.createBufferSource();
+  noise.buffer = buffer;
+
+  const filter = ctx.createBiquadFilter();
+  filter.type = "lowpass";
+  filter.frequency.setValueAtTime(240, now);
+  filter.frequency.exponentialRampToValueAtTime(1200, now + 0.45);
+  filter.frequency.exponentialRampToValueAtTime(180, now + duration);
+  filter.Q.setValueAtTime(1.5, now);
+
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime(0.001, now);
+  gain.gain.linearRampToValueAtTime(0.16, now + 0.38);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+
+  noise.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+
+  noise.start(now);
+  noise.stop(now + duration);
+}

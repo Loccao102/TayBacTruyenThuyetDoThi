@@ -18,7 +18,15 @@ import {
   ChevronRight,
   Landmark
 } from "lucide-react";
-import { playPageFlipSound, playWoodBlockSound } from "@/utils/audioEffects";
+import {
+  playPageFlipSound,
+  playWoodBlockSound,
+  playBookOpenCreakSound,
+  playMistWhooshSound
+} from "@/utils/audioEffects";
+import MountainMistWipe from "@/components/MountainMistWipe";
+import HighlandWeatherEngine, { HighlandSeason } from "@/components/HighlandWeatherEngine";
+import { EthnicBrocadeBorder, EthnicEmblem } from "@/components/EthnicBrocade";
 
 interface HeroScreenProps {
   onOpenBook: () => void;
@@ -31,12 +39,17 @@ type AtmosphereMode = "dawn" | "day" | "night";
 export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroScreenProps) {
   const [lang, setLang] = useState<"VI" | "EN">("VI");
   const [atmosphere, setAtmosphere] = useState<AtmosphereMode>("dawn");
+  const [season, setSeason] = useState<HighlandSeason>("thu");
   const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const [isOpeningBook, setIsOpeningBook] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [transitionTarget, setTransitionTarget] = useState<(() => void) | null>(null);
+  const [mistMessage, setMistMessage] = useState("Mở trang nhật ký non ngàn...");
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Mouse parallax tracking for the 3D Heritage Book
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isOpeningBook) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -83,18 +96,41 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
     { id: "mai-chau", name: "Hòa Bình", landmark: "Thung lũng bản Lác Mai Châu", icon: "🎋" }
   ];
 
+  // Cinematic 3D Book Opening Sequence with Mountain Mist Wipe
+  const triggerCinematicOpen = (action: () => void, message = "Mở trang nhật ký non ngàn...") => {
+    if (isOpeningBook || isTransitioning) return;
+    setIsOpeningBook(true);
+    playBookOpenCreakSound();
+    setMistMessage(message);
+    setTransitionTarget(() => action);
+
+    // Roll mountain mist across viewport
+    setTimeout(() => {
+      setIsTransitioning(true);
+    }, 420);
+  };
+
   const handleOpenMainBook = () => {
-    playPageFlipSound();
-    onOpenBook();
+    triggerCinematicOpen(() => onOpenBook(), "Mở trang nhật ký non ngàn...");
   };
 
   const handleSelectProvince = (siteId: string) => {
     playWoodBlockSound();
-    if (onOpenSite) {
-      onOpenSite(siteId);
-    } else {
-      onOpenBook();
-    }
+    triggerCinematicOpen(() => {
+      if (onOpenSite) {
+        onOpenSite(siteId);
+      } else {
+        onOpenBook();
+      }
+    }, "Chạm đến danh thắng Tây Bắc...");
+  };
+
+  const handleOpenInteractiveMap = () => {
+    playWoodBlockSound();
+    triggerCinematicOpen(() => {
+      if (onOpenMap) onOpenMap();
+      else onOpenBook();
+    }, "Mở bản đồ địa lý di sản...");
   };
 
   return (
@@ -162,31 +198,12 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
         }}
       />
 
-      {/* Floating Golden Dust Particles */}
-      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
-        {[
-          { left: "15%", top: "70%", delay: "0s", dur: "8s" },
-          { left: "28%", top: "85%", delay: "2s", dur: "11s" },
-          { left: "45%", top: "65%", delay: "1.5s", dur: "9s" },
-          { left: "72%", top: "78%", delay: "3s", dur: "10s" },
-          { left: "85%", top: "60%", delay: "0.5s", dur: "7s" }
-        ].map((pt, i) => (
-          <div
-            key={i}
-            style={{
-              position: "absolute",
-              left: pt.left,
-              top: pt.top,
-              width: 5,
-              height: 5,
-              borderRadius: "50%",
-              background: atmosphere === "night" ? "#88b5ff" : "var(--gold-bright)",
-              boxShadow: atmosphere === "night" ? "0 0 10px #70a0ff" : "0 0 10px #dfb572",
-              animation: `emberRise ${pt.dur} infinite ease-out ${pt.delay}`
-            }}
-          />
-        ))}
-      </div>
+      {/* 4-Season Generative Highland Atmosphere Engine (Xuân/Hạ/Thu/Đông) */}
+      <HighlandWeatherEngine
+        currentSeason={season}
+        onSeasonChange={setSeason}
+        showSelector={true}
+      />
 
       {/* ====================================================================
           TOP GLASSMORPHIC NAVIGATION BAR
@@ -389,7 +406,7 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
               boxShadow: "0 2px 12px rgba(166, 53, 39, 0.2)"
             }}
           >
-            <Sparkles size={13} color="var(--gold-bright)" />
+            <EthnicEmblem variant="dao-sun" size={17} color="var(--gold-bright)" secondaryColor="var(--seal-cinnabar)" />
             <span>Ký sự điền dã & Truyền thuyết đô thị</span>
           </div>
 
@@ -415,9 +432,9 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
               fontFamily: "var(--font-serif)",
               fontSize: "clamp(62px, 8.8vw, 110px)",
               fontWeight: 700,
-              lineHeight: 0.92,
-              letterSpacing: "-0.02em",
-              margin: "0 0 14px"
+              lineHeight: 1.12,
+              letterSpacing: "-0.01em",
+              margin: "-6px 0 8px"
             }}
           >
             Tây Bắc
@@ -431,7 +448,7 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
               fontSize: "clamp(18px, 2.2vw, 26px)",
               color: "var(--gold-bright)",
               letterSpacing: "0.06em",
-              marginBottom: 18,
+              marginBottom: 14,
               display: "flex",
               alignItems: "center",
               gap: 12
@@ -439,6 +456,15 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
           >
             <span>“Nơi đá nở hoa, nơi huyền thoại hóa trầm tích”</span>
           </div>
+
+          {/* Hand-stitched brocade geometric thread */}
+          <EthnicBrocadeBorder
+            variant="hmong-cross"
+            height={13}
+            color="var(--gold-bright)"
+            secondaryColor="var(--seal-cinnabar)"
+            style={{ maxWidth: 420, marginBottom: 20, opacity: 0.85 }}
+          />
 
           {/* Editorial Paragraph */}
           <p
@@ -644,81 +670,307 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
             </div>
           </div>
 
-          {/* THE 3D TANGIBLE LEATHER NOTEBOOK */}
+          {/* THE 3D TANGIBLE LEATHER NOTEBOOK WITH CINEMATIC OPENING SEQUENCE */}
           <div
             onClick={handleOpenMainBook}
             style={{
               width: "100%",
               maxWidth: 380,
               aspectRatio: "1 / 1.35",
-              background: "radial-gradient(ellipse at 40% 35%, #4c261b 0%, #28120b 70%, #150906 100%)",
-              borderRadius: "14px 18px 18px 14px",
-              boxShadow: "-25px 35px 65px rgba(0, 0, 0, 0.7), 0 0 50px rgba(212, 175, 109, 0.22)",
-              border: "1.5px solid rgba(212, 175, 109, 0.45)",
               position: "relative",
               cursor: "pointer",
               transformStyle: "preserve-3d",
-              transform: `rotateY(${-10 + mousePos.x * 20}deg) rotateX(${6 + mousePos.y * -20}deg)`,
-              transition: "transform 0.15s ease-out, box-shadow 0.3s ease",
-              animation: "bookLevitate 6s infinite ease-in-out"
+              transform: isOpeningBook
+                ? `scale(1.22) translate3d(-10%, -15px, 80px) rotateY(-8deg) rotateX(2deg)`
+                : `rotateY(${-10 + mousePos.x * 20}deg) rotateX(${6 + mousePos.y * -20}deg)`,
+              transition: "transform 0.85s cubic-bezier(0.2, 0.9, 0.25, 1), box-shadow 0.4s ease",
+              animation: isOpeningBook ? "none" : "bookLevitate 6s infinite ease-in-out"
             }}
           >
-            {/* Stitched Edge Detail */}
+            {/* LAYER 1: INSIDE REVEALED PAGE (Rendered on book interior base) */}
             <div
               style={{
                 position: "absolute",
-                inset: 12,
-                border: "1.5px dashed rgba(212, 175, 109, 0.35)",
-                borderRadius: 10,
-                pointerEvents: "none"
+                inset: 0,
+                background: "radial-gradient(ellipse at 50% 50%, #faf5eb 0%, #ede2cd 80%, #dfd1b5 100%)",
+                borderRadius: "12px 16px 16px 12px",
+                border: "1.5px solid rgba(181, 140, 73, 0.45)",
+                boxShadow: "inset 18px 0 35px rgba(43, 27, 21, 0.2), -20px 25px 60px rgba(0,0,0,0.65)",
+                padding: "36px 28px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+                textAlign: "center",
+                zIndex: 10,
+                overflow: "hidden"
               }}
-            />
+            >
+              <EthnicBrocadeBorder variant="hmong-cross" height={13} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" style={{ opacity: 0.9 }} />
 
-            {/* Brass Corner 1 (Top Left) */}
-            <div style={{ position: "absolute", top: 6, left: 6, width: 34, height: 34 }}>
-              <svg viewBox="0 0 40 40" fill="none">
-                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
-                <circle cx="12" cy="12" r="3" fill="#664a1a" />
-              </svg>
-            </div>
-            {/* Brass Corner 2 (Top Right) */}
-            <div style={{ position: "absolute", top: 6, right: 6, width: 34, height: 34, transform: "rotate(90deg)" }}>
-              <svg viewBox="0 0 40 40" fill="none">
-                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
-                <circle cx="12" cy="12" r="3" fill="#664a1a" />
-              </svg>
-            </div>
-            {/* Brass Corner 3 (Bottom Left) */}
-            <div style={{ position: "absolute", bottom: 6, left: 6, width: 34, height: 34, transform: "rotate(-90deg)" }}>
-              <svg viewBox="0 0 40 40" fill="none">
-                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
-                <circle cx="12" cy="12" r="3" fill="#664a1a" />
-              </svg>
-            </div>
-            {/* Brass Corner 4 (Bottom Right) */}
-            <div style={{ position: "absolute", bottom: 6, right: 6, width: 34, height: 34, transform: "rotate(180deg)" }}>
-              <svg viewBox="0 0 40 40" fill="none">
-                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
-                <circle cx="12" cy="12" r="3" fill="#664a1a" />
-              </svg>
+              <div style={{ margin: "auto 0" }}>
+                <EthnicEmblem variant="dao-sun" size={44} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" spinning={true} />
+                <h3
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "22px",
+                    fontWeight: 700,
+                    letterSpacing: "0.18em",
+                    color: "var(--ink-primary)",
+                    marginTop: 12,
+                    marginBottom: 4
+                  }}
+                >
+                  NHẬT KÝ DI SẢN
+                </h3>
+                <span
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontStyle: "italic",
+                    fontSize: "13px",
+                    color: "var(--ochre-earth)",
+                    display: "block",
+                    marginBottom: 16
+                  }}
+                >
+                  “Chạm vào trầm tích ngàn năm non cao...”
+                </span>
+
+                <div
+                  className="stamp-explored"
+                  style={{
+                    display: "inline-flex",
+                    margin: "0 auto",
+                    padding: "4px 14px",
+                    fontSize: "10px"
+                  }}
+                >
+                  <Sparkles size={11} />
+                  <span>★ KHAI QUYỂN ★</span>
+                </div>
+              </div>
+
+              <EthnicBrocadeBorder variant="thai-zigzag" height={11} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" style={{ opacity: 0.85 }} />
             </div>
 
-            {/* Red Silk Ribbon Bookmark Hanging Below Book */}
+            {/* LAYER 2: 3D SWINGING FRONT COVER */}
             <div
               style={{
                 position: "absolute",
-                top: 0,
-                left: "48%",
-                width: 20,
-                height: "108%",
-                background: "linear-gradient(90deg, #7c2217, #a63527 50%, #6d1c14)",
-                boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
-                clipPath: "polygon(0 0, 100% 0, 100% 92%, 50% 100%, 0 92%)",
+                inset: 0,
+                transformOrigin: "left center",
+                transformStyle: "preserve-3d",
+                transform: isOpeningBook ? "rotateY(-155deg)" : "rotateY(0deg)",
+                transition: "transform 0.85s cubic-bezier(0.25, 1, 0.35, 1)",
                 zIndex: 20
               }}
-            />
+            >
+              {/* FRONT FACE (Closed Cover) */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                  background: "radial-gradient(ellipse at 40% 35%, #4c261b 0%, #28120b 70%, #150906 100%)",
+                  borderRadius: "14px 18px 18px 14px",
+                  boxShadow: "-25px 35px 65px rgba(0, 0, 0, 0.7), 0 0 50px rgba(212, 175, 109, 0.22)",
+                  border: "1.5px solid rgba(212, 175, 109, 0.45)"
+                }}
+              >
+                {/* Stitched Edge Detail */}
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 12,
+                    border: "1.5px dashed rgba(212, 175, 109, 0.35)",
+                    borderRadius: 10,
+                    pointerEvents: "none"
+                  }}
+                />
 
-            {/* Visible Multi-Layered Deckle Edge Pages on the Right */}
+                {/* Brass Corner 1 (Top Left) */}
+                <div style={{ position: "absolute", top: 6, left: 6, width: 34, height: 34 }}>
+                  <svg viewBox="0 0 40 40" fill="none">
+                    <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                    <circle cx="12" cy="12" r="3" fill="#664a1a" />
+                  </svg>
+                </div>
+                {/* Brass Corner 2 (Top Right) */}
+                <div style={{ position: "absolute", top: 6, right: 6, width: 34, height: 34, transform: "rotate(90deg)" }}>
+                  <svg viewBox="0 0 40 40" fill="none">
+                    <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                    <circle cx="12" cy="12" r="3" fill="#664a1a" />
+                  </svg>
+                </div>
+                {/* Brass Corner 3 (Bottom Left) */}
+                <div style={{ position: "absolute", bottom: 6, left: 6, width: 34, height: 34, transform: "rotate(-90deg)" }}>
+                  <svg viewBox="0 0 40 40" fill="none">
+                    <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                    <circle cx="12" cy="12" r="3" fill="#664a1a" />
+                  </svg>
+                </div>
+                {/* Brass Corner 4 (Bottom Right) */}
+                <div style={{ position: "absolute", bottom: 6, right: 6, width: 34, height: 34, transform: "rotate(180deg)" }}>
+                  <svg viewBox="0 0 40 40" fill="none">
+                    <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                    <circle cx="12" cy="12" r="3" fill="#664a1a" />
+                  </svg>
+                </div>
+
+                {/* Red Silk Ribbon Bookmark */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: "48%",
+                    width: 20,
+                    height: "108%",
+                    background: "linear-gradient(90deg, #7c2217, #a63527 50%, #6d1c14)",
+                    boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
+                    clipPath: "polygon(0 0, 100% 0, 100% 92%, 50% 100%, 0 92%)",
+                    zIndex: 20
+                  }}
+                />
+
+                {/* Center Book Content */}
+                <div
+                  style={{
+                    position: "relative",
+                    zIndex: 22,
+                    height: "100%",
+                    padding: "40px 30px",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center"
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 64,
+                      height: 64,
+                      borderRadius: "50%",
+                      border: "2px solid rgba(212, 175, 109, 0.6)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "var(--gold-bright)",
+                      marginBottom: 16,
+                      background: "radial-gradient(circle, rgba(212, 175, 109, 0.15) 0%, transparent 80%)"
+                    }}
+                  >
+                    <Mountain size={34} strokeWidth={1.5} />
+                  </div>
+
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "34px",
+                      fontWeight: 700,
+                      color: "var(--gold-bright)",
+                      letterSpacing: "0.2em",
+                      margin: "0 0 4px",
+                      textShadow: "0 2px 10px rgba(0,0,0,0.6)"
+                    }}
+                  >
+                    TÂY BẮC
+                  </h2>
+
+                  <span
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "12px",
+                      fontStyle: "italic",
+                      letterSpacing: "0.25em",
+                      color: "#e6d5b8",
+                      textTransform: "uppercase",
+                      marginBottom: 24,
+                      display: "block"
+                    }}
+                  >
+                    Nhật Ký Di Sản
+                  </span>
+
+                  <div
+                    className="stamp-explored"
+                    style={{
+                      marginBottom: 28,
+                      background: "rgba(166, 53, 39, 0.15)",
+                      boxShadow: "0 2px 10px rgba(166, 53, 39, 0.3)"
+                    }}
+                  >
+                    <Sparkles size={13} />
+                    <span>★ ĐÃ KHÁM PHÁ ★</span>
+                  </div>
+
+                  <div
+                    style={{
+                      fontSize: "11.5px",
+                      fontWeight: 600,
+                      color: "rgba(250, 246, 238, 0.9)",
+                      letterSpacing: "0.08em",
+                      background: "rgba(0, 0, 0, 0.4)",
+                      padding: "6px 16px",
+                      borderRadius: 20,
+                      border: "1px solid rgba(212, 175, 109, 0.3)"
+                    }}
+                  >
+                    {isOpeningBook ? "Đang mở sổ..." : "Chạm để mở sổ ➔"}
+                  </div>
+                </div>
+              </div>
+
+              {/* BACK FACE (Inside of front cover) */}
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  transform: "rotateY(180deg)",
+                  backfaceVisibility: "hidden",
+                  WebkitBackfaceVisibility: "hidden",
+                  background: "radial-gradient(ellipse at 50% 50%, #2f1911 0%, #1c0e09 85%, #0f0705 100%)",
+                  borderRadius: "18px 14px 14px 18px",
+                  border: "1.5px solid rgba(212, 175, 109, 0.35)",
+                  boxShadow: "inset 0 0 30px rgba(0,0,0,0.6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: 24
+                }}
+              >
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    border: "1px dashed rgba(212, 175, 109, 0.3)",
+                    borderRadius: 10,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "rgba(212, 175, 109, 0.7)",
+                    textAlign: "center"
+                  }}
+                >
+                  <EthnicEmblem variant="hmong-cross" size={32} color="rgba(212, 175, 109, 0.6)" />
+                  <span
+                    style={{
+                      fontFamily: "var(--font-serif)",
+                      fontSize: "11px",
+                      letterSpacing: "0.2em",
+                      marginTop: 10,
+                      textTransform: "uppercase"
+                    }}
+                  >
+                    Ấn bản điền dã 2026
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* LAYER 3: MULTI-LAYERED DECKLE EDGE PAGES ON THE RIGHT */}
             <div
               style={{
                 position: "absolute",
@@ -730,100 +982,11 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
                 borderRadius: "0 4px 4px 0",
                 boxShadow: "inset -2px 0 6px rgba(0,0,0,0.35)",
                 transform: "rotateY(70deg)",
-                transformOrigin: "left center"
+                transformOrigin: "left center",
+                opacity: isOpeningBook ? 0.3 : 1,
+                transition: "opacity 0.4s ease"
               }}
             />
-
-            {/* Center Book Content */}
-            <div
-              style={{
-                position: "relative",
-                zIndex: 22,
-                height: "100%",
-                padding: "40px 30px",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                textAlign: "center"
-              }}
-            >
-              {/* Embossed Mountain Crest */}
-              <div
-                style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: "50%",
-                  border: "2px solid rgba(212, 175, 109, 0.6)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "var(--gold-bright)",
-                  marginBottom: 16,
-                  background: "radial-gradient(circle, rgba(212, 175, 109, 0.15) 0%, transparent 80%)"
-                }}
-              >
-                <Mountain size={34} strokeWidth={1.5} />
-              </div>
-
-              <h2
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "34px",
-                  fontWeight: 700,
-                  color: "var(--gold-bright)",
-                  letterSpacing: "0.2em",
-                  margin: "0 0 4px",
-                  textShadow: "0 2px 10px rgba(0,0,0,0.6)"
-                }}
-              >
-                TÂY BẮC
-              </h2>
-
-              <span
-                style={{
-                  fontFamily: "var(--font-serif)",
-                  fontSize: "12px",
-                  fontStyle: "italic",
-                  letterSpacing: "0.25em",
-                  color: "#e6d5b8",
-                  textTransform: "uppercase",
-                  marginBottom: 24,
-                  display: "block"
-                }}
-              >
-                Nhật Ký Di Sản
-              </span>
-
-              {/* Red Cinnabar Seal Stamp */}
-              <div
-                className="stamp-explored"
-                style={{
-                  marginBottom: 28,
-                  background: "rgba(166, 53, 39, 0.15)",
-                  boxShadow: "0 2px 10px rgba(166, 53, 39, 0.3)"
-                }}
-              >
-                <Sparkles size={13} />
-                <span>★ ĐÃ KHÁM PHÁ ★</span>
-              </div>
-
-              {/* Click Affordance Prompt */}
-              <div
-                style={{
-                  fontSize: "11.5px",
-                  fontWeight: 600,
-                  color: "rgba(250, 246, 238, 0.9)",
-                  letterSpacing: "0.08em",
-                  background: "rgba(0, 0, 0, 0.4)",
-                  padding: "6px 16px",
-                  borderRadius: 20,
-                  border: "1px solid rgba(212, 175, 109, 0.3)"
-                }}
-              >
-                Chạm để mở sổ ➔
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -886,6 +1049,20 @@ export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroSc
           ))}
         </div>
       </div>
+
+      {/* Mountain Mist Transition Wipe across Hero */}
+      <MountainMistWipe
+        isTransitioning={isTransitioning}
+        message={mistMessage}
+        onPeak={() => {
+          if (transitionTarget) transitionTarget();
+        }}
+        onComplete={() => {
+          setIsTransitioning(false);
+          setIsOpeningBook(false);
+        }}
+        durationMs={1300}
+      />
     </section>
   );
 }

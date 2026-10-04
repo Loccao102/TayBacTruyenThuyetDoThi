@@ -35,6 +35,8 @@ import {
 import { HERITAGE_SITES, SiteData, BADGES } from "@/data/heritage";
 import { playPageFlipSound, playStampSound, playWoodBlockSound } from "@/utils/audioEffects";
 import AudioGuidePlayer from "@/components/AudioGuidePlayer";
+import DragToFlipCorner from "@/components/DragToFlipCorner";
+import { EthnicBrocadeBorder, EthnicDivider, EthnicEmblem } from "@/components/EthnicBrocade";
 
 interface HeritageBookProps {
   initialOpen?: boolean;
@@ -278,12 +280,17 @@ export default function HeritageBook({
                 fontStyle: "italic",
                 color: "#e6d5b8",
                 letterSpacing: "0.22em",
-                marginBottom: 36,
+                marginBottom: 20,
                 display: "block"
               }}
             >
               NHẬT KÝ DI SẢN
             </span>
+
+            {/* Hand-stitched Ethnic Brocade Border */}
+            <div style={{ width: "240px", margin: "0 auto 28px" }}>
+              <EthnicBrocadeBorder variant="hmong-cross" height={16} color="var(--gold-bright)" secondaryColor="var(--seal-cinnabar)" />
+            </div>
 
             {/* Gold Floral Rosette */}
             <div
@@ -361,24 +368,22 @@ export default function HeritageBook({
               </>
             )}
 
-            {/* Curled Page Corners for Authentic Turn Affordance on Both Sides */}
+            {/* Interactive Tactile Drag-To-Flip Corners on Both Sides */}
             {currentPage < 5 && (
-              <div
-                className="page-curl-corner-br"
-                onClick={handleNextPage}
-                title="Lật sang trang tiếp theo (Click lật sách)"
-              >
-                <ChevronRight size={14} color="var(--ink-secondary)" style={{ opacity: 0.7 }} />
-              </div>
+              <DragToFlipCorner
+                side="right"
+                disabled={!!isFlipping}
+                onFlip={handleNextPage}
+                tooltip="Kéo góc lật sang trang sau (hoặc nhấn lật nhanh)"
+              />
             )}
             {currentPage > 1 && (
-              <div
-                className="page-curl-corner-bl"
-                onClick={handlePrevPage}
-                title="Lật về trang trước (Click lật sách)"
-              >
-                <ChevronLeft size={14} color="var(--ink-secondary)" style={{ opacity: 0.7 }} />
-              </div>
+              <DragToFlipCorner
+                side="left"
+                disabled={!!isFlipping}
+                onFlip={handlePrevPage}
+                tooltip="Kéo góc lật về trang trước (hoặc nhấn lật nhanh)"
+              />
             )}
 
             {/* ==============================================================
@@ -397,6 +402,7 @@ export default function HeritageBook({
                   }}
                 >
                   <div>
+                    <EthnicBrocadeBorder variant="thai-zigzag" height={13} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" style={{ marginBottom: 14, opacity: 0.85 }} />
                     <span
                       style={{
                         fontFamily: "var(--font-serif)",
@@ -572,6 +578,7 @@ export default function HeritageBook({
                   }}
                 >
                   <div>
+                    <EthnicBrocadeBorder variant="terrace-steps" height={13} color="var(--bronze-leaf)" secondaryColor="var(--ochre-earth)" style={{ marginBottom: 12, opacity: 0.85 }} />
                     <h2
                       style={{
                         fontFamily: "var(--font-serif)",
@@ -950,6 +957,8 @@ export default function HeritageBook({
                       </select>
                     </div>
 
+                    <EthnicBrocadeBorder variant="hmong-cross" height={13} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" style={{ marginBottom: 12, opacity: 0.85 }} />
+
                     {/* Site Large Cover Photo */}
                     <div
                       style={{
@@ -1040,6 +1049,8 @@ export default function HeritageBook({
                     siteTitle={selectedSite.title}
                     narrationText={selectedSite.audioNarration}
                   />
+
+                  <EthnicBrocadeBorder variant="thai-zigzag" height={12} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" style={{ margin: "10px 0 12px", opacity: 0.8 }} />
 
                   {/* Tab Navigation Buttons (Screen 5) */}
                   <div
@@ -1656,6 +1667,7 @@ export default function HeritageBook({
                   }}
                 >
                   <div>
+                    <EthnicBrocadeBorder variant="dao-sun" height={13} color="var(--bronze-leaf)" secondaryColor="var(--seal-cinnabar)" style={{ marginBottom: 12, opacity: 0.85 }} />
                     <h2
                       style={{
                         fontFamily: "var(--font-serif)",

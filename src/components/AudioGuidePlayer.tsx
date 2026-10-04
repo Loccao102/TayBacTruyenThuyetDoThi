@@ -14,6 +14,7 @@ import {
   FileText
 } from "lucide-react";
 import { playWoodBlockSound } from "@/utils/audioEffects";
+import { createFemaleUtterance, isSpeechSupported, useVietnameseFemaleVoice } from "@/utils/speech";
 
 interface AudioGuidePlayerProps {
   siteTitle: string;
@@ -30,7 +31,7 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
 
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const bestVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
+  const voiceInfo = useVietnameseFemaleVoice();
 
   // Split narration into sentences for live karaoke highlighting
   const sentences = useMemo(() => {
@@ -40,29 +41,6 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
     const split = raw.match(/[^.!?…]+[.!?…]*/g);
     return split ? split.map(s => s.trim()).filter(Boolean) : [raw];
   }, [narrationText]);
-
-  // Load and cache best Vietnamese voice
-  useEffect(() => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-
-    const findVoice = () => {
-      const voices = window.speechSynthesis.getVoices();
-      // Look for Vietnamese voice
-      const viVoice = voices.find(
-        v => v.lang.toLowerCase().includes("vi") || v.name.toLowerCase().includes("vietnamese")
-      );
-      bestVoiceRef.current = viVoice || null;
-    };
-
-    findVoice();
-    window.speechSynthesis.onvoiceschanged = findVoice;
-
-    return () => {
-      if (typeof window !== "undefined" && "speechSynthesis" in window) {
-        window.speechSynthesis.onvoiceschanged = null;
-      }
-    };
-  }, []);
 
   // Stop speech when unmounting or changing monument
   useEffect(() => {
@@ -90,7 +68,7 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
   };
 
   const startSpeech = (startFromSentence: number = 0) => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    if (!isSpeechSupported()) return;
 
     window.speechSynthesis.cancel();
 
@@ -98,14 +76,10 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
     const textToSpeak = sentences.slice(startFromSentence).join(" ").replace(/[*_#]/g, "");
     if (!textToSpeak) return;
 
-    const utterance = new SpeechSynthesisUtterance(textToSpeak);
-    utterance.lang = "vi-VN";
-    if (bestVoiceRef.current) {
-      utterance.voice = bestVoiceRef.current;
-    }
-    utterance.rate = speed;
-    utterance.pitch = 1.05;
-    utterance.volume = isMuted ? 0 : 1;
+    const utterance = createFemaleUtterance(textToSpeak, voiceInfo, {
+      rate: speed,
+      volume: isMuted ? 0 : 1
+    });
 
     // Calculate duration estimate based on character count
     const totalChars = textToSpeak.length;
@@ -259,7 +233,9 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
               </span>
             </div>
             <span style={{ fontSize: "11px", color: "var(--ink-muted)" }}>
-              {isPlaying ? `Đang thuyết minh: ${siteTitle}` : "Nhấn nút để nghe thuyết minh giọng đọc bản địa"}
+              {isPlaying
+                ? `Đang thuyết minh: ${siteTitle}`
+                : `Giọng đọc: ${voiceInfo.label}${voiceInfo.voice && !voiceInfo.isKnownFemale ? " (đã nâng tông nữ)" : ""}`}
             </span>
           </div>
         </div>

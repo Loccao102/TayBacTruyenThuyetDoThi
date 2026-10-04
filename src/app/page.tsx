@@ -5,6 +5,8 @@ import HeroScreen from "@/components/HeroScreen";
 import HeritageBook from "@/components/HeritageBook";
 import AiNana from "@/components/AiNana";
 import AudioSoundscape from "@/components/AudioSoundscape";
+import MountainMistWipe from "@/components/MountainMistWipe";
+import { EthnicBrocadeBorder, EthnicEmblem } from "@/components/EthnicBrocade";
 import {
   BookOpen,
   Home,
@@ -21,6 +23,7 @@ export default function HomePage() {
   const [targetSiteId, setTargetSiteId] = useState<string | null>(null);
   const [targetTab, setTargetTab] = useState<string | null>(null);
   const [targetPage, setTargetPage] = useState<number | null>(null);
+  const [isReturningToHero, setIsReturningToHero] = useState<boolean>(false);
 
   const handleOpenBook = (siteId?: string, tab?: string, page?: number) => {
     if (siteId) setTargetSiteId(siteId);
@@ -40,6 +43,11 @@ export default function HomePage() {
     setTargetTab("quiz");
     setTargetPage(3);
     setViewMode("book");
+  };
+
+  const handleReturnToHero = () => {
+    if (isReturningToHero) return;
+    setIsReturningToHero(true);
   };
 
   return (
@@ -82,7 +90,7 @@ export default function HomePage() {
             }}
           >
             <button
-              onClick={() => setViewMode("hero")}
+              onClick={handleReturnToHero}
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -98,8 +106,8 @@ export default function HomePage() {
               <Home size={14} /> Về màn hình mở đầu
             </button>
 
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: "var(--gold-bright)", fontSize: "14px" }}>✦</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <EthnicEmblem variant="dao-sun" size={18} color="var(--gold-bright)" secondaryColor="var(--seal-cinnabar)" />
               <span
                 style={{
                   fontFamily: "var(--font-serif)",
@@ -111,7 +119,7 @@ export default function HomePage() {
               >
                 TÂY BẮC — NHẬT KÝ DI SẢN
               </span>
-              <span style={{ color: "var(--gold-bright)", fontSize: "14px" }}>✦</span>
+              <EthnicEmblem variant="dao-sun" size={18} color="var(--gold-bright)" secondaryColor="var(--seal-cinnabar)" />
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -126,10 +134,19 @@ export default function HomePage() {
             targetSiteId={targetSiteId}
             targetTab={targetTab}
             targetPage={targetPage}
-            onClose={() => setViewMode("hero")}
+            onClose={handleReturnToHero}
           />
         </div>
       )}
+
+      {/* Return to Hero Mountain Mist Wipe */}
+      <MountainMistWipe
+        isTransitioning={isReturningToHero}
+        message="Trở lại non ngàn Tây Bắc..."
+        onPeak={() => setViewMode("hero")}
+        onComplete={() => setIsReturningToHero(false)}
+        durationMs={1200}
+      />
 
       {/* Generative Ambient Flute & Mountain Air Soundscape */}
       <AudioSoundscape />
@@ -139,7 +156,7 @@ export default function HomePage() {
         onOpenSite={(siteId) => handleOpenBook(siteId, "overview")}
         onOpenMap={handleOpenMap}
         onOpenQuiz={handleOpenQuiz}
-        onOpenHero={() => setViewMode("hero")}
+        onOpenHero={handleReturnToHero}
         currentView={viewMode}
       />
     </main>

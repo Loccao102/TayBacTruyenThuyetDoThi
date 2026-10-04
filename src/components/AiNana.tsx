@@ -18,6 +18,7 @@ import {
   Award,
   ChevronRight
 } from "lucide-react";
+import { createFemaleUtterance, isSpeechSupported, useVietnameseFemaleVoice } from "@/utils/speech";
 
 interface AiNanaProps {
   onOpenSite: (siteId: string) => void;
@@ -44,6 +45,7 @@ export default function AiNana({
 }: AiNanaProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
+  const voiceInfo = useVietnameseFemaleVoice();
   const [isTourActive, setIsTourActive] = useState(false);
   const [tourStepIndex, setTourStepIndex] = useState(0);
 
@@ -102,17 +104,13 @@ export default function AiNana({
     }
   ];
 
-  // Text-to-speech for Vietnamese
-  const speakText = (text: string) => {
-    if (!isVoiceEnabled || typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  // Text-to-speech for Vietnamese (female voice). `force` bypasses stale toggle state.
+  const speakText = (text: string, force = false) => {
+    if ((!isVoiceEnabled && !force) || !isSpeechSupported()) return;
     try {
       window.speechSynthesis.cancel();
       const cleanText = text.replace(/[*_#]/g, "");
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = "vi-VN";
-      utterance.rate = 0.95;
-      utterance.pitch = 1.15;
-      window.speechSynthesis.speak(utterance);
+      window.speechSynthesis.speak(createFemaleUtterance(cleanText, voiceInfo, { rate: 0.97 }));
     } catch {}
   };
 
@@ -443,7 +441,7 @@ export default function AiNana({
                 onClick={() => {
                   const nextVoice = !isVoiceEnabled;
                   setIsVoiceEnabled(nextVoice);
-                  if (nextVoice) speakText("Đã bật giọng nói thuyết minh tiếng Việt của Nana!");
+                  if (nextVoice) speakText("Đã bật giọng nói thuyết minh tiếng Việt của Nana!", true);
                 }}
                 title={isVoiceEnabled ? "Tắt giọng nói Nana" : "Bật giọng nói tiếng Việt của Nana"}
                 style={{
