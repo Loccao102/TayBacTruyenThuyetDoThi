@@ -1,0 +1,33 @@
+{
+  "name": "taybactruyenthuyetdothi",
+  "version": "1.0.0",
+  "description": "> **Concept**: *Modern Heritage Editorial & Antique Parchment Journal* — Sự kết hợp giữa báo chí điều tra tương tác cao cấp (Interactive Digital Magazine) và trải nghiệm lật mở cuốn sổ nhật ký điền dã cổ điển.",
+  "main": "script.js",
+  "scripts": {
+    "dev": "next dev -p 3005",
+    "build": "next build",
+    "start": "next start -p 3005"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Loccao102/TayBacTruyenThuyetDoThi.git"
+  },
+  "keywords": [],
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Loccao102/TayBacTruyenThuyetDoThi/issues"
+  },
+  "homepage": "https://github.com/Loccao102/TayBacTruyenThuyetDoThi#readme",
+  "dependencies": {
+    "lucide-react": "^1.51.0",
+    "next": "^16.3.8",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}
