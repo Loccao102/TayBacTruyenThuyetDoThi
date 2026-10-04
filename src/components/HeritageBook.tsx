@@ -41,13 +41,15 @@ interface HeritageBookProps {
   onClose?: () => void;
   targetSiteId?: string | null;
   targetTab?: string | null;
+  targetPage?: number | null;
 }
 
 export default function HeritageBook({
   initialOpen = true,
   onClose,
   targetSiteId = null,
-  targetTab = "overview"
+  targetTab = "overview",
+  targetPage = null
 }: HeritageBookProps) {
   // Page index:
   // 0: Cover (Screen 2)
@@ -110,8 +112,10 @@ export default function HeritageBook({
         if (targetTab) setActiveTab(targetTab);
         markAsExplored(site.id);
       }
+    } else if (targetPage !== null && targetPage !== undefined) {
+      flipToPage(targetPage);
     }
-  }, [targetSiteId, targetTab]);
+  }, [targetSiteId, targetTab, targetPage]);
 
   // Reset quiz and facts when switching monument
   useEffect(() => {

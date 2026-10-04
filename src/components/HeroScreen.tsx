@@ -1,26 +1,115 @@
 "use client";
 
-import React, { useState } from "react";
-import { ArrowRight, BookOpen, Menu, Globe, Volume2, Sparkles, Compass } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import {
+  ArrowRight,
+  BookOpen,
+  Compass,
+  Sparkles,
+  Mountain,
+  MapPin,
+  Headphones,
+  Sun,
+  Sunset,
+  Moon,
+  Volume2,
+  VolumeX,
+  Layers,
+  ChevronRight,
+  Landmark
+} from "lucide-react";
+import { playPageFlipSound, playWoodBlockSound } from "@/utils/audioEffects";
 
 interface HeroScreenProps {
   onOpenBook: () => void;
+  onOpenSite?: (siteId: string) => void;
+  onOpenMap?: () => void;
 }
 
-export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
+type AtmosphereMode = "dawn" | "day" | "night";
+
+export default function HeroScreen({ onOpenBook, onOpenSite, onOpenMap }: HeroScreenProps) {
   const [lang, setLang] = useState<"VI" | "EN">("VI");
+  const [atmosphere, setAtmosphere] = useState<AtmosphereMode>("dawn");
+  const [mousePos, setMousePos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Mouse parallax tracking for the 3D Heritage Book
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setMousePos({ x, y });
+  };
+
+  // Atmosphere background configuration
+  const ATMOSPHERES = {
+    dawn: {
+      label: "Bình Minh",
+      icon: <Sunset size={14} />,
+      bgImage: "https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=1800",
+      gradient: "radial-gradient(ellipse at 60% 30%, rgba(212, 126, 68, 0.35) 0%, rgba(46, 26, 20, 0.75) 50%, #150906 100%)",
+      tagline: "Sương sớm bồng bềnh trên đỉnh Hoàng Liên Sơn",
+      temp: "17°C · Sương mù nhẹ"
+    },
+    day: {
+      label: "Nắng Vàng",
+      icon: <Sun size={14} />,
+      bgImage: "https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=1800",
+      gradient: "radial-gradient(ellipse at 65% 35%, rgba(197, 155, 62, 0.3) 0%, rgba(42, 28, 20, 0.75) 55%, #140a07 100%)",
+      tagline: "Nắng vàng rót mật trên thung lũng Mù Cang Chải",
+      temp: "24°C · Nắng ấm đại ngàn"
+    },
+    night: {
+      label: "Đêm Trăng",
+      icon: <Moon size={14} />,
+      bgImage: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=1800",
+      gradient: "radial-gradient(ellipse at 70% 30%, rgba(70, 85, 140, 0.35) 0%, rgba(20, 16, 28, 0.85) 60%, #0a0710 100%)",
+      tagline: "Đom đóm và trăng bạc soi bóng suối Nậm Rốm",
+      temp: "14°C · Đêm tĩnh mịch"
+    }
+  };
+
+  const currentAtmo = ATMOSPHERES[atmosphere];
+
+  // 6 Highland Provinces showcase cards
+  const PROVINCES = [
+    { id: "dien-bien-phu", name: "Điện Biên", landmark: "Chiến trường Điện Biên Phủ", icon: "⚔️" },
+    { id: "mu-cang-chai", name: "Yên Bái", landmark: "Ruộng bậc thang Mù Cang Chải", icon: "🌾" },
+    { id: "vua-meo", name: "Lào Cai", landmark: "Dinh Hoàng A Tưởng & Sa Pa", icon: "🏰" },
+    { id: "nha-tu-son-la", name: "Sơn La", landmark: "Nhà tù Sơn La & Đồi Khau Cả", icon: "🌸" },
+    { id: "deo-o-quy-ho", name: "Lai Châu", landmark: "Cổng trời Đèo Ô Quy Hồ", icon: "🏔️" },
+    { id: "mai-chau", name: "Hòa Bình", landmark: "Thung lũng bản Lác Mai Châu", icon: "🎋" }
+  ];
+
+  const handleOpenMainBook = () => {
+    playPageFlipSound();
+    onOpenBook();
+  };
+
+  const handleSelectProvince = (siteId: string) => {
+    playWoodBlockSound();
+    if (onOpenSite) {
+      onOpenSite(siteId);
+    } else {
+      onOpenBook();
+    }
+  };
 
   return (
     <section
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
       style={{
         position: "relative",
         minHeight: "100vh",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
-        background: "radial-gradient(circle at 65% 40%, #442a22 0%, #20130f 50%, #120907 100%)",
+        background: "#120907",
         overflow: "hidden",
-        padding: "24px 6vw"
+        padding: "20px 4vw 24px"
       }}
     >
       {/* Background Cinematic Photo Layer */}
@@ -28,196 +117,773 @@ export default function HeroScreen({ onOpenBook }: HeroScreenProps) {
         style={{
           position: "absolute",
           inset: 0,
-          backgroundImage: "url('https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=1800')",
+          backgroundImage: `url('${currentAtmo.bgImage}')`,
           backgroundSize: "cover",
-          backgroundPosition: "center",
-          opacity: 0.38,
-          filter: "saturate(0.85) sepia(0.18)",
-          transform: "scale(1.04)"
+          backgroundPosition: "center 30%",
+          opacity: atmosphere === "night" ? 0.32 : 0.45,
+          filter: atmosphere === "night" ? "saturate(0.9) brightness(0.7)" : "saturate(1.1) brightness(0.9)",
+          transform: `scale(1.05) translate(${mousePos.x * -15}px, ${mousePos.y * -15}px)`,
+          transition: "background-image 0.8s ease, filter 0.8s ease, transform 0.2s ease-out"
         }}
       />
 
-      {/* Gentle Mist and Vignette Gradient */}
+      {/* Dynamic Lighting & Vignette Overlay */}
       <div
         style={{
           position: "absolute",
           inset: 0,
-          background:
-            "linear-gradient(180deg, rgba(22, 12, 10, 0.4) 0%, rgba(22, 12, 10, 0.6) 60%, rgba(20, 11, 9, 0.95) 100%), radial-gradient(ellipse at 40% 50%, transparent 20%, rgba(18, 9, 7, 0.75) 90%)",
+          background: currentAtmo.gradient,
+          pointerEvents: "none",
+          transition: "background 0.8s ease"
+        }}
+      />
+
+      {/* Linear Fade to Ground */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "linear-gradient(180deg, rgba(18, 9, 7, 0.45) 0%, rgba(18, 9, 7, 0.2) 40%, rgba(18, 9, 7, 0.92) 100%)",
           pointerEvents: "none"
         }}
       />
 
-      {/* Top Header Bar (Artboard 1) */}
+      {/* Drifting Mountain Mist Layers */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 320,
+          background: "radial-gradient(ellipse at 50% 100%, rgba(240, 226, 206, 0.08) 0%, transparent 70%)",
+          pointerEvents: "none",
+          animation: "mistDrift 14s infinite ease-in-out"
+        }}
+      />
+
+      {/* Floating Golden Dust Particles */}
+      <div style={{ position: "absolute", inset: 0, pointerEvents: "none", overflow: "hidden" }}>
+        {[
+          { left: "15%", top: "70%", delay: "0s", dur: "8s" },
+          { left: "28%", top: "85%", delay: "2s", dur: "11s" },
+          { left: "45%", top: "65%", delay: "1.5s", dur: "9s" },
+          { left: "72%", top: "78%", delay: "3s", dur: "10s" },
+          { left: "85%", top: "60%", delay: "0.5s", dur: "7s" }
+        ].map((pt, i) => (
+          <div
+            key={i}
+            style={{
+              position: "absolute",
+              left: pt.left,
+              top: pt.top,
+              width: 5,
+              height: 5,
+              borderRadius: "50%",
+              background: atmosphere === "night" ? "#88b5ff" : "var(--gold-bright)",
+              boxShadow: atmosphere === "night" ? "0 0 10px #70a0ff" : "0 0 10px #dfb572",
+              animation: `emberRise ${pt.dur} infinite ease-out ${pt.delay}`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* ====================================================================
+          TOP GLASSMORPHIC NAVIGATION BAR
+          ==================================================================== */}
       <header
         style={{
           position: "relative",
-          zIndex: 20,
+          zIndex: 30,
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          color: "var(--paper-ivory)"
+          color: "var(--paper-ivory)",
+          padding: "12px 20px",
+          background: "rgba(35, 20, 16, 0.5)",
+          backdropFilter: "blur(16px)",
+          WebkitBackdropFilter: "blur(16px)",
+          borderRadius: 9999,
+          border: "1px solid rgba(212, 175, 109, 0.25)",
+          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.35)",
+          flexWrap: "wrap",
+          gap: 12
         }}
       >
-        {/* Brand */}
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          <span style={{ color: "var(--gold-bright)", fontSize: "18px" }}>✦</span>
-          <span
+        {/* Brand Identity */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <div
             style={{
-              fontFamily: "var(--font-serif)",
-              fontSize: "17px",
-              letterSpacing: "0.2em",
-              fontWeight: 700
+              width: 32,
+              height: 32,
+              borderRadius: "50%",
+              background: "linear-gradient(135deg, var(--seal-cinnabar) 0%, #68170d 100%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: "#fff",
+              boxShadow: "0 2px 10px rgba(166, 53, 39, 0.4)"
             }}
           >
-            TÂY BẮC
-          </span>
+            <Mountain size={16} />
+          </div>
+          <div>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "16px",
+                  letterSpacing: "0.22em",
+                  fontWeight: 700,
+                  color: "#fff8ee"
+                }}
+              >
+                TÂY BẮC
+              </span>
+              <span style={{ color: "var(--gold-bright)", fontSize: "12px" }}>✦</span>
+            </div>
+            <span style={{ fontSize: "9.5px", letterSpacing: "0.15em", color: "var(--gold-bright)", textTransform: "uppercase" }}>
+              Bách Khoa Di Sản Điền Dã
+            </span>
+          </div>
         </div>
 
-        {/* Right Controls: VI | EN & Book CTA */}
-        <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
+        {/* Center: Realtime Atmosphere Selector */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+            background: "rgba(0, 0, 0, 0.35)",
+            padding: "3px 4px",
+            borderRadius: 9999,
+            border: "1px solid rgba(255, 255, 255, 0.08)"
+          }}
+        >
+          {(["dawn", "day", "night"] as AtmosphereMode[]).map(mode => {
+            const active = atmosphere === mode;
+            return (
+              <button
+                key={mode}
+                onClick={() => {
+                  playWoodBlockSound();
+                  setAtmosphere(mode);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 5,
+                  padding: "5px 12px",
+                  borderRadius: 9999,
+                  fontSize: "11px",
+                  fontWeight: active ? 700 : 500,
+                  color: active ? "#fff" : "rgba(240, 226, 206, 0.7)",
+                  background: active
+                    ? "linear-gradient(135deg, var(--leather-base) 0%, #46251b 100%)"
+                    : "transparent",
+                  boxShadow: active ? "0 2px 8px rgba(0, 0, 0, 0.4)" : "none",
+                  border: active ? "1px solid rgba(212, 175, 109, 0.4)" : "none",
+                  transition: "all 0.25s ease"
+                }}
+              >
+                {ATMOSPHERES[mode].icon}
+                <span>{ATMOSPHERES[mode].label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right HUD: Coordinates, Language & Book CTA */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          {/* Coordinates HUD */}
           <div
             style={{
               display: "flex",
               alignItems: "center",
               gap: 6,
               fontSize: "11px",
-              letterSpacing: "0.1em",
-              color: "rgba(250, 246, 238, 0.8)",
+              color: "rgba(240, 226, 206, 0.75)",
+              borderRight: "1px solid rgba(255, 255, 255, 0.15)",
+              paddingRight: 14
+            }}
+          >
+            <Compass size={13} color="var(--gold-bright)" />
+            <span style={{ fontFamily: "monospace", letterSpacing: "0.05em" }}>
+              21°23&apos;N · 103°01&apos;E
+            </span>
+          </div>
+
+          {/* Lang Toggle */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              fontSize: "11.5px",
+              fontWeight: 600,
+              color: "rgba(240, 226, 206, 0.75)",
               cursor: "pointer"
             }}
           >
             <span
               onClick={() => setLang("VI")}
-              style={{
-                fontWeight: lang === "VI" ? 700 : 400,
-                color: lang === "VI" ? "var(--gold-bright)" : "inherit"
-              }}
+              style={{ color: lang === "VI" ? "var(--gold-bright)" : "inherit" }}
             >
               VI
             </span>
-            <span>|</span>
+            <span>/</span>
             <span
               onClick={() => setLang("EN")}
-              style={{
-                fontWeight: lang === "EN" ? 700 : 400,
-                color: lang === "EN" ? "var(--gold-bright)" : "inherit"
-              }}
+              style={{ color: lang === "EN" ? "var(--gold-bright)" : "inherit" }}
             >
               EN
             </span>
           </div>
 
+          {/* Direct Open Button */}
           <button
-            onClick={onOpenBook}
-            className="btn-warm"
-            style={{ padding: "8px 18px", fontSize: "12px" }}
+            onClick={handleOpenMainBook}
+            className="btn-gold"
+            style={{ padding: "8px 18px", fontSize: "12px", boxShadow: "0 4px 15px rgba(181, 140, 73, 0.4)" }}
           >
             <BookOpen size={14} />
-            <span>Mở sổ</span>
+            <span>MỞ SỔ DI SẢN</span>
           </button>
         </div>
       </header>
 
-      {/* Hero Typography & Content (Artboard 1) */}
+      {/* ====================================================================
+          HERO CORE: 2-COLUMN SPLIT (EDITORIAL + 3D SHOWPIECE)
+          ==================================================================== */}
       <div
         style={{
           position: "relative",
-          zIndex: 20,
-          maxWidth: 680,
-          margin: "80px 0 60px"
+          zIndex: 25,
+          display: "grid",
+          gridTemplateColumns: "1.15fr 0.95fr",
+          alignItems: "center",
+          gap: "4vw",
+          maxWidth: 1320,
+          width: "100%",
+          margin: "32px auto 20px"
         }}
       >
-        <span
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(24px, 3.5vw, 38px)",
-            color: "rgba(250, 246, 238, 0.9)",
-            display: "block",
-            lineHeight: 1.1,
-            letterSpacing: "0.04em"
-          }}
-        >
-          Khám phá
-        </span>
+        {/* LEFT COLUMN: POETIC TYPOGRAPHY & INTERACTIVE METRICS */}
+        <div>
+          {/* Highland Kicker Badge */}
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              padding: "5px 14px",
+              borderRadius: 9999,
+              background: "rgba(166, 53, 39, 0.18)",
+              border: "1px solid rgba(166, 53, 39, 0.45)",
+              color: "#ffc2ba",
+              fontSize: "11px",
+              fontWeight: 700,
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              marginBottom: 16,
+              boxShadow: "0 2px 12px rgba(166, 53, 39, 0.2)"
+            }}
+          >
+            <Sparkles size={13} color="var(--gold-bright)" />
+            <span>Ký sự điền dã & Truyền thuyết đô thị</span>
+          </div>
 
-        <h1
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontSize: "clamp(56px, 8.5vw, 98px)",
-            fontWeight: 700,
-            color: "#fff8ee",
-            letterSpacing: "-0.015em",
-            lineHeight: 0.95,
-            margin: "4px 0 10px"
-          }}
-        >
-          Tây Bắc
-        </h1>
+          {/* Subheading */}
+          <span
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(20px, 2.5vw, 28px)",
+              color: "rgba(250, 246, 238, 0.85)",
+              display: "block",
+              letterSpacing: "0.08em",
+              fontWeight: 500,
+              marginBottom: 4
+            }}
+          >
+            Hành trình khám phá
+          </span>
 
-        <span
-          style={{
-            fontFamily: "var(--font-serif)",
-            fontStyle: "italic",
-            fontSize: "clamp(20px, 3vw, 32px)",
-            color: "var(--gold-bright)",
-            display: "block",
-            letterSpacing: "0.08em",
-            marginBottom: 24
-          }}
-        >
-          Nhật ký di sản
-        </span>
+          {/* Giant Metallic Shimmer Headline */}
+          <h1
+            className="hero-gold-title"
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontSize: "clamp(62px, 8.8vw, 110px)",
+              fontWeight: 700,
+              lineHeight: 0.92,
+              letterSpacing: "-0.02em",
+              margin: "0 0 14px"
+            }}
+          >
+            Tây Bắc
+          </h1>
 
-        <p
-          style={{
-            fontSize: "clamp(14px, 1.6vw, 17px)",
-            color: "#e6d5bf",
-            lineHeight: 1.75,
-            maxWidth: 480,
-            marginBottom: 36
-          }}
-        >
-          Những vùng đất, câu chuyện và di sản đang chờ bạn khám phá.
-        </p>
+          {/* Poetic Subtitle */}
+          <div
+            style={{
+              fontFamily: "var(--font-serif)",
+              fontStyle: "italic",
+              fontSize: "clamp(18px, 2.2vw, 26px)",
+              color: "var(--gold-bright)",
+              letterSpacing: "0.06em",
+              marginBottom: 18,
+              display: "flex",
+              alignItems: "center",
+              gap: 12
+            }}
+          >
+            <span>“Nơi đá nở hoa, nơi huyền thoại hóa trầm tích”</span>
+          </div>
 
-        <button
-          onClick={onOpenBook}
-          className="btn-warm"
+          {/* Editorial Paragraph */}
+          <p
+            style={{
+              fontSize: "clamp(14px, 1.4vw, 16px)",
+              color: "rgba(240, 226, 206, 0.85)",
+              lineHeight: 1.8,
+              maxWidth: 540,
+              marginBottom: 28,
+              textShadow: "0 2px 10px rgba(0,0,0,0.5)"
+            }}
+          >
+            Dưới làn mây trắng bồng bềnh của đỉnh Hoàng Liên, từng triền ruộng bậc thang kiệt tác,
+            mái đền cổ kính và âm vang tiếng khèn nơi đại ngàn đang mở ra cuốn sổ tay điền dã sống động.
+          </p>
+
+          {/* 4 Frosted Glass Stat Cards */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 10,
+              maxWidth: 540,
+              marginBottom: 32
+            }}
+          >
+            {[
+              { val: "06", label: "Tỉnh Vùng Cao", sub: "Điện Biên, Lào Cai..." },
+              { val: "08+", label: "Quần Thể Di Tích", sub: "Lịch sử & Danh lam" },
+              { val: "100%", label: "Audio Guide", sub: "Thuyết minh bản địa" },
+              { val: "3D", label: "Sổ Da Giấy Dó", sub: "Lật trang xúc giác" }
+            ].map((st, i) => (
+              <div key={i} className="hero-stat-card">
+                <div
+                  style={{
+                    fontFamily: "var(--font-serif)",
+                    fontSize: "20px",
+                    fontWeight: 700,
+                    color: "var(--gold-bright)",
+                    lineHeight: 1.1
+                  }}
+                >
+                  {st.val}
+                </div>
+                <div style={{ fontSize: "11px", fontWeight: 700, color: "#fff", marginTop: 2 }}>
+                  {st.label}
+                </div>
+                <div style={{ fontSize: "9px", color: "rgba(240, 226, 206, 0.6)", marginTop: 1 }}>
+                  {st.sub}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Action Button Row */}
+          <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
+            <button
+              onClick={handleOpenMainBook}
+              className="btn-warm hero-cta-pulse"
+              style={{
+                padding: "16px 36px",
+                fontSize: "14px",
+                letterSpacing: "0.08em",
+                background: "linear-gradient(135deg, #5a3022 0%, #30160e 100%)",
+                border: "1.5px solid rgba(212, 175, 109, 0.6)",
+                boxShadow: "0 6px 25px rgba(28, 14, 9, 0.7), 0 0 30px rgba(212, 175, 109, 0.3)"
+              }}
+            >
+              <BookOpen size={18} />
+              <span>LẬT MỞ TRANG SỔ</span>
+              <ArrowRight size={18} />
+            </button>
+
+            {onOpenMap && (
+              <button
+                onClick={() => {
+                  playWoodBlockSound();
+                  onOpenMap();
+                }}
+                className="hero-chip"
+                style={{
+                  padding: "14px 24px",
+                  borderRadius: 9999,
+                  color: "#fff8ee",
+                  fontSize: "13.5px",
+                  fontWeight: 600,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8,
+                  cursor: "pointer"
+                }}
+              >
+                <Compass size={17} color="var(--gold-bright)" />
+                <span>BẢN ĐỒ ĐIỀN DÃ</span>
+              </button>
+            )}
+
+            {/* Quick sound badge */}
+            <div
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "8px 14px",
+                borderRadius: 9999,
+                background: "rgba(0, 0, 0, 0.3)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+                color: "var(--gold-bright)",
+                fontSize: "11px"
+              }}
+            >
+              <Headphones size={13} />
+              <span>Sáo mèo & Tiếng gió Hoàng Liên</span>
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: THE 3D INTERACTIVE HIGHLAND JOURNAL SHOWPIECE */}
+        <div
           style={{
-            padding: "14px 34px",
-            fontSize: "14px",
-            letterSpacing: "0.08em"
+            position: "relative",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            perspective: 1400
           }}
         >
-          <BookOpen size={16} />
-          <span>MỞ SỔ</span>
-          <ArrowRight size={16} />
-        </button>
+          {/* Orbiting Highlight Badge 1 (Top Right) */}
+          <div
+            className="hero-chip"
+            onClick={() => handleSelectProvince("mu-cang-chai")}
+            style={{
+              position: "absolute",
+              top: "-15px",
+              right: "10px",
+              zIndex: 35,
+              padding: "10px 14px",
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              cursor: "pointer",
+              animation: "floatingBadge 4s infinite ease-in-out"
+            }}
+          >
+            <div
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 6,
+                backgroundImage: "url('https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=200')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.4)"
+              }}
+            />
+            <div>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>
+                Mù Cang Chải 1.200m
+              </div>
+              <div style={{ fontSize: "10px", color: "var(--gold-bright)" }}>
+                Di tích Quốc gia đặc biệt ➔
+              </div>
+            </div>
+          </div>
+
+          {/* Orbiting Highlight Badge 2 (Bottom Left) */}
+          <div
+            className="hero-chip"
+            onClick={() => handleSelectProvince("deo-o-quy-ho")}
+            style={{
+              position: "absolute",
+              bottom: "20px",
+              left: "-15px",
+              zIndex: 35,
+              padding: "10px 14px",
+              borderRadius: 10,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+              cursor: "pointer",
+              animation: "floatingBadge 4.5s infinite ease-in-out 1s"
+            }}
+          >
+            <div
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: 6,
+                backgroundImage: "url('https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=200')",
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.4)"
+              }}
+            />
+            <div>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "#fff" }}>
+                Đèo Ô Quy Hồ 2.035m
+              </div>
+              <div style={{ fontSize: "10px", color: "var(--gold-bright)" }}>
+                Đệ nhất đỉnh đèo Tây Bắc ➔
+              </div>
+            </div>
+          </div>
+
+          {/* THE 3D TANGIBLE LEATHER NOTEBOOK */}
+          <div
+            onClick={handleOpenMainBook}
+            style={{
+              width: "100%",
+              maxWidth: 380,
+              aspectRatio: "1 / 1.35",
+              background: "radial-gradient(ellipse at 40% 35%, #4c261b 0%, #28120b 70%, #150906 100%)",
+              borderRadius: "14px 18px 18px 14px",
+              boxShadow: "-25px 35px 65px rgba(0, 0, 0, 0.7), 0 0 50px rgba(212, 175, 109, 0.22)",
+              border: "1.5px solid rgba(212, 175, 109, 0.45)",
+              position: "relative",
+              cursor: "pointer",
+              transformStyle: "preserve-3d",
+              transform: `rotateY(${-10 + mousePos.x * 20}deg) rotateX(${6 + mousePos.y * -20}deg)`,
+              transition: "transform 0.15s ease-out, box-shadow 0.3s ease",
+              animation: "bookLevitate 6s infinite ease-in-out"
+            }}
+          >
+            {/* Stitched Edge Detail */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 12,
+                border: "1.5px dashed rgba(212, 175, 109, 0.35)",
+                borderRadius: 10,
+                pointerEvents: "none"
+              }}
+            />
+
+            {/* Brass Corner 1 (Top Left) */}
+            <div style={{ position: "absolute", top: 6, left: 6, width: 34, height: 34 }}>
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                <circle cx="12" cy="12" r="3" fill="#664a1a" />
+              </svg>
+            </div>
+            {/* Brass Corner 2 (Top Right) */}
+            <div style={{ position: "absolute", top: 6, right: 6, width: 34, height: 34, transform: "rotate(90deg)" }}>
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                <circle cx="12" cy="12" r="3" fill="#664a1a" />
+              </svg>
+            </div>
+            {/* Brass Corner 3 (Bottom Left) */}
+            <div style={{ position: "absolute", bottom: 6, left: 6, width: 34, height: 34, transform: "rotate(-90deg)" }}>
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                <circle cx="12" cy="12" r="3" fill="#664a1a" />
+              </svg>
+            </div>
+            {/* Brass Corner 4 (Bottom Right) */}
+            <div style={{ position: "absolute", bottom: 6, right: 6, width: 34, height: 34, transform: "rotate(180deg)" }}>
+              <svg viewBox="0 0 40 40" fill="none">
+                <path d="M 0,0 L 38,0 C 22,2 2,22 0,38 Z" fill="#d4af6d" />
+                <circle cx="12" cy="12" r="3" fill="#664a1a" />
+              </svg>
+            </div>
+
+            {/* Red Silk Ribbon Bookmark Hanging Below Book */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "48%",
+                width: 20,
+                height: "108%",
+                background: "linear-gradient(90deg, #7c2217, #a63527 50%, #6d1c14)",
+                boxShadow: "0 6px 18px rgba(0,0,0,0.5)",
+                clipPath: "polygon(0 0, 100% 0, 100% 92%, 50% 100%, 0 92%)",
+                zIndex: 20
+              }}
+            />
+
+            {/* Visible Multi-Layered Deckle Edge Pages on the Right */}
+            <div
+              style={{
+                position: "absolute",
+                top: 8,
+                bottom: 8,
+                right: -16,
+                width: 16,
+                background: "repeating-linear-gradient(90deg, #e5d8c1 0px, #d5c4a6 2px, #faf5eb 4px)",
+                borderRadius: "0 4px 4px 0",
+                boxShadow: "inset -2px 0 6px rgba(0,0,0,0.35)",
+                transform: "rotateY(70deg)",
+                transformOrigin: "left center"
+              }}
+            />
+
+            {/* Center Book Content */}
+            <div
+              style={{
+                position: "relative",
+                zIndex: 22,
+                height: "100%",
+                padding: "40px 30px",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center"
+              }}
+            >
+              {/* Embossed Mountain Crest */}
+              <div
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: "50%",
+                  border: "2px solid rgba(212, 175, 109, 0.6)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--gold-bright)",
+                  marginBottom: 16,
+                  background: "radial-gradient(circle, rgba(212, 175, 109, 0.15) 0%, transparent 80%)"
+                }}
+              >
+                <Mountain size={34} strokeWidth={1.5} />
+              </div>
+
+              <h2
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "34px",
+                  fontWeight: 700,
+                  color: "var(--gold-bright)",
+                  letterSpacing: "0.2em",
+                  margin: "0 0 4px",
+                  textShadow: "0 2px 10px rgba(0,0,0,0.6)"
+                }}
+              >
+                TÂY BẮC
+              </h2>
+
+              <span
+                style={{
+                  fontFamily: "var(--font-serif)",
+                  fontSize: "12px",
+                  fontStyle: "italic",
+                  letterSpacing: "0.25em",
+                  color: "#e6d5b8",
+                  textTransform: "uppercase",
+                  marginBottom: 24,
+                  display: "block"
+                }}
+              >
+                Nhật Ký Di Sản
+              </span>
+
+              {/* Red Cinnabar Seal Stamp */}
+              <div
+                className="stamp-explored"
+                style={{
+                  marginBottom: 28,
+                  background: "rgba(166, 53, 39, 0.15)",
+                  boxShadow: "0 2px 10px rgba(166, 53, 39, 0.3)"
+                }}
+              >
+                <Sparkles size={13} />
+                <span>★ ĐÃ KHÁM PHÁ ★</span>
+              </div>
+
+              {/* Click Affordance Prompt */}
+              <div
+                style={{
+                  fontSize: "11.5px",
+                  fontWeight: 600,
+                  color: "rgba(250, 246, 238, 0.9)",
+                  letterSpacing: "0.08em",
+                  background: "rgba(0, 0, 0, 0.4)",
+                  padding: "6px 16px",
+                  borderRadius: 20,
+                  border: "1px solid rgba(212, 175, 109, 0.3)"
+                }}
+              >
+                Chạm để mở sổ ➔
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Bottom Footer Note (Artboard 1) */}
+      {/* ====================================================================
+          BOTTOM HORIZONTAL PROVINCE RAIL (6 PROVINCES QUICK DOCK)
+          ==================================================================== */}
       <div
         style={{
           position: "relative",
-          zIndex: 20,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          color: "rgba(250, 246, 238, 0.7)",
-          fontSize: "12px",
-          fontFamily: "var(--font-serif)",
-          fontStyle: "italic",
-          borderTop: "1px solid rgba(212, 175, 109, 0.15)",
+          zIndex: 30,
+          borderTop: "1px solid rgba(212, 175, 109, 0.18)",
           paddingTop: 16
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <Compass size={14} color="var(--gold-bright)" />
-          <span>Tây Bắc — Nơi cội nguồn kỳ vĩ</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: "11px", letterSpacing: "0.15em", color: "var(--gold-bright)", textTransform: "uppercase", fontWeight: 700 }}>
+            <Layers size={13} />
+            <span>Chọn tỉnh thành khám phá nhanh</span>
+          </div>
+          <span style={{ fontSize: "11px", color: "rgba(240, 226, 206, 0.6)", fontStyle: "italic" }}>
+            {currentAtmo.tagline}
+          </span>
         </div>
-        <div style={{ fontSize: "11px", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-          Nhật ký điền dã · 2026
+
+        {/* 6 Province Cards Rail */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(6, 1fr)",
+            gap: 10,
+            overflowX: "auto"
+          }}
+        >
+          {PROVINCES.map(prov => (
+            <div
+              key={prov.id}
+              onClick={() => handleSelectProvince(prov.id)}
+              className="hero-chip"
+              style={{
+                padding: "8px 12px",
+                borderRadius: 8,
+                cursor: "pointer",
+                display: "flex",
+                flexDirection: "column",
+                gap: 2
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ fontSize: "13px" }}>{prov.icon}</span>
+                <ChevronRight size={12} color="var(--gold-bright)" style={{ opacity: 0.7 }} />
+              </div>
+              <div style={{ fontSize: "12px", fontWeight: 700, color: "#fff8ee" }}>
+                {prov.name}
+              </div>
+              <div style={{ fontSize: "9.5px", color: "rgba(240, 226, 206, 0.7)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                {prov.landmark}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>

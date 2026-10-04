@@ -495,3 +495,110 @@ button {
     display: none;
   }
 }
+
+/* ==========================================================================
+   CINEMATIC MODERN HIGHLAND HERO SECTION
+   ========================================================================== */
+.hero-gold-title {
+  background: linear-gradient(
+    135deg,
+    #ffffff 0%,
+    #fff3df 25%,
+    #dfb572 50%,
+    #fcedd1 75%,
+    #ffffff 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: goldShimmer 7s linear infinite;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes goldShimmer {
+  0% { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes mistDrift {
+  0% { transform: translateX(0) scale(1); opacity: 0.35; }
+  50% { transform: translateX(-30px) scale(1.05); opacity: 0.55; }
+  100% { transform: translateX(0) scale(1); opacity: 0.35; }
+}
+
+@keyframes bookLevitate {
+  0%, 100% {
+    transform: translateY(0px) rotateY(-8deg) rotateX(4deg);
+    box-shadow: -20px 25px 50px rgba(0, 0, 0, 0.55), 0 0 40px rgba(212, 175, 109, 0.15);
+  }
+  50% {
+    transform: translateY(-14px) rotateY(-4deg) rotateX(7deg);
+    box-shadow: -25px 35px 65px rgba(0, 0, 0, 0.65), 0 0 55px rgba(212, 175, 109, 0.28);
+  }
+}
+
+@keyframes floatingBadge {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes emberRise {
+  0% {
+    transform: translateY(0) scale(0.6);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-160px) scale(1.1);
+    opacity: 0;
+  }
+}
+
+.hero-chip {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  background: rgba(43, 27, 21, 0.55);
+  border: 1px solid rgba(212, 175, 109, 0.22);
+  transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.hero-chip:hover {
+  background: rgba(69, 44, 34, 0.85);
+  border-color: rgba(212, 175, 109, 0.65);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 15px rgba(212, 175, 109, 0.25);
+}
+
+.hero-stat-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(30, 18, 14, 0.55);
+  border: 1px solid rgba(212, 175, 109, 0.2);
+  border-radius: 10px;
+  padding: 10px 16px;
+  transition: all 0.25s ease;
+}
+.hero-stat-card:hover {
+  border-color: rgba(212, 175, 109, 0.5);
+  background: rgba(45, 27, 21, 0.7);
+  transform: translateY(-2px);
+}
+
+.hero-cta-pulse {
+  position: relative;
+}
+.hero-cta-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 9999px;
+  border: 2px solid rgba(212, 175, 109, 0.4);
+  animation: ctaPulseRing 2.4s infinite cubic-bezier(0.2, 0.8, 0.2, 1);
+  pointer-events: none;
+}
+
+@keyframes ctaPulseRing {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.15); opacity: 0; }
+}

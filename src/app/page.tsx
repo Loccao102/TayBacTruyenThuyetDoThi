@@ -20,21 +20,25 @@ export default function HomePage() {
   const [viewMode, setViewMode] = useState<"hero" | "book">("hero");
   const [targetSiteId, setTargetSiteId] = useState<string | null>(null);
   const [targetTab, setTargetTab] = useState<string | null>(null);
+  const [targetPage, setTargetPage] = useState<number | null>(null);
 
-  const handleOpenBook = (siteId?: string, tab?: string) => {
+  const handleOpenBook = (siteId?: string, tab?: string, page?: number) => {
     if (siteId) setTargetSiteId(siteId);
     if (tab) setTargetTab(tab);
+    setTargetPage(page ?? (siteId ? 3 : 0));
     setViewMode("book");
   };
 
   const handleOpenMap = () => {
+    setTargetSiteId(null);
+    setTargetPage(2);
     setViewMode("book");
-    // HeritageBook handles mapping internally
   };
 
   const handleOpenQuiz = (siteId: string) => {
     setTargetSiteId(siteId);
     setTargetTab("quiz");
+    setTargetPage(3);
     setViewMode("book");
   };
 
@@ -42,7 +46,11 @@ export default function HomePage() {
     <main style={{ minHeight: "100vh", position: "relative" }}>
       {/* View 1: Hero Screen (Màn hình mở đầu - Artboard 1) */}
       {viewMode === "hero" && (
-        <HeroScreen onOpenBook={() => handleOpenBook()} />
+        <HeroScreen
+          onOpenBook={() => handleOpenBook()}
+          onOpenSite={(siteId) => handleOpenBook(siteId, "overview", 3)}
+          onOpenMap={handleOpenMap}
+        />
       )}
 
       {/* View 2: Physical Heritage Book Spread (Artboards 2 - 12, 14) */}
@@ -117,6 +125,7 @@ export default function HomePage() {
           <HeritageBook
             targetSiteId={targetSiteId}
             targetTab={targetTab}
+            targetPage={targetPage}
             onClose={() => setViewMode("hero")}
           />
         </div>
