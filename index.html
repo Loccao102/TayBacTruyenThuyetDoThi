@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#2b1713">
+<title>Tây Bắc — Nhật ký di sản</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<div class="grain"></div>
+<div class="page-loader"><div class="loader-mark">TÂY BẮC</div><div class="loader-line"><span></span></div></div>
+<header class="topbar">
+<button class="brand" data-action="home"><span class="brand-mark">✦</span><span>TÂY BẮC</span></button>
+<div class="topbar-meta"><span>NHẬT KÝ DI SẢN</span><span class="page-count"><b id="pageCurrent">01</b> / 05</span></div>
+<button class="menu-button" id="menuButton" aria-label="Mở menu"><span></span><span></span></button>
+</header>
+
+<main class="book-shell">
+<div class="book-glow"></div>
+<div class="book" id="book">
+<section class="spread spread-cover active">
+<div class="cover-art">
+<div class="cover-photo"></div><div class="cover-vignette"></div>
+<div class="cover-ornament top">❧</div>
+<div class="cover-copy"><span class="eyebrow">NHẬT KÝ DI SẢN · 2026</span>
+<h1>Khám phá<br><em>Tây Bắc</em></h1>
+<p>Những vùng đất, câu chuyện và dấu tích được kể lại bằng một cuốn sổ tương tác.</p>
+<button class="primary-button" id="openBook">MỞ SỔ <span>↗</span></button></div>
+<div class="cover-note">Mỗi vùng đất đều có một câu chuyện.</div><div class="cover-ornament bottom">❧</div>
+</div><div class="paper-edge"></div>
+</section>
+
+<section class="spread">
+<div class="page left-page intro-page"><div class="page-number">01</div><span class="eyebrow">LỜI MỞ ĐẦU</span>
+<h2>Mở một trang.<br><em>Gặp một vùng đất.</em></h2><div class="rule"></div>
+<p class="lead">Tây Bắc không chỉ được tạo nên bởi những dãy núi. Đó còn là ký ức, con người, những công trình và câu chuyện đã ở lại qua nhiều thế hệ.</p>
+<p>Cuốn sổ này là một cách để đi qua những câu chuyện ấy — chậm hơn một chút, tò mò hơn một chút.</p>
+<div class="signature">— Nhật ký hành trình</div></div>
+<div class="page right-page photo-page"><div class="photo-frame"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=1400" alt="Ruộng bậc thang La Pán Tẩn, Mù Cang Chải"><span class="photo-caption">La Pán Tẩn · Mù Cang Chải</span></div>
+<div class="stamp">TÂY BẮC<br><small>HERITAGE</small></div></div>
+</section>
+
+<section class="spread map-spread">
+<div class="page left-page map-copy"><div class="page-number">02</div><span class="eyebrow">BẢN ĐỒ HÀNH TRÌNH</span>
+<h2>Đi đâu<br><em>hôm nay?</em></h2><p>Chọn một điểm trên bản đồ để mở câu chuyện về nơi ấy.</p>
+<div class="legend"><span><i class="dot explored"></i> Đã khám phá</span><span><i class="dot"></i> Điểm đến</span></div>
+<button class="text-button" id="discoverButton">KHÁM PHÁ MỘT ĐIỂM <span>→</span></button></div>
+<div class="page right-page map-page"><div class="map-paper">
+<div class="contour contour-a"></div><div class="contour contour-b"></div><div class="contour contour-c"></div>
+<div class="mountain mountain-a"></div><div class="mountain mountain-b"></div>
+<div class="map-label label-1">Lào Cai</div><div class="map-label label-2">Yên Bái</div><div class="map-label label-3">Điện Biên</div>
+<button class="map-pin pin-1" data-place="Mù Cang Chải"><span></span></button><button class="map-pin pin-2" data-place="Điện Biên Phủ"><span></span></button><button class="map-pin pin-3" data-place="Sa Pa"><span></span></button>
+<div class="map-tooltip" id="mapTooltip"></div><div class="compass">N<br><span>✦</span></div></div><div class="map-credit">Bản đồ minh họa · không dùng cho định vị</div></div>
+</section>
+
+<section class="spread story-spread">
+<div class="page left-page story-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=1400" alt="Mù Cang Chải"><div class="image-overlay"></div><span class="vertical-note">MÙ CANG CHẢI · YÊN BÁI</span></div>
+<div class="page right-page story-copy"><div class="page-number">03</div><span class="eyebrow">MỘT ĐIỂM DỪNG</span>
+<h2>Mù Cang Chải<br><em>mùa nước đổ</em></h2><p class="lead">Có những nơi không cần nói lớn. Chỉ cần nhìn đủ lâu, người ta sẽ bắt đầu nghe thấy câu chuyện của nó.</p>
+<p>Những thửa ruộng bậc thang nối nhau theo sườn núi tạo nên một cảnh quan vừa tự nhiên vừa do bàn tay con người kiến tạo.</p>
+<div class="story-meta"><span>01 · Địa danh</span><span>02 · Cảnh quan</span><span>03 · Câu chuyện</span></div>
+<button class="primary-button small" id="turnStory">MỞ CÂU CHUYỆN <span>→</span></button></div>
+</section>
+
+<section class="spread archive-spread">
+<div class="page left-page archive-copy"><div class="page-number">04</div><span class="eyebrow">GÓC TƯ LIỆU</span>
+<h2>Những gì<br><em>còn ở lại.</em></h2>
+<div class="archive-card"><span class="archive-index">A / 01</span><h3>Ruộng bậc thang Lìm Mông</h3><p>Một lát cắt của cảnh quan Tây Bắc — nơi địa hình và đời sống cùng tạo nên một di sản sống.</p><span class="archive-arrow">↗</span></div>
+<div class="archive-card muted"><span class="archive-index">A / 02</span><h3>Điện Biên Phủ</h3><p>Trang tiếp theo đang chờ được mở.</p><span class="archive-arrow">↗</span></div></div>
+<div class="page right-page gallery-page"><div class="gallery-main"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Limmong3.jpg?width=1400" alt="Ruộng bậc thang Lìm Mông"></div>
+<div class="gallery-strip"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=700" alt=""><div class="gallery-note">Tư liệu hình ảnh<br><b>Lìm Mông</b></div></div></div>
+</section>
+
+<section class="spread final-spread"><div class="final-inner"><span class="eyebrow">NHẬT KÝ HÀNH TRÌNH</span>
+<h2>Một cuốn sổ.<br><em>Nhiều câu chuyện.</em></h2><p>Khám phá một di tích, đọc một câu chuyện, trả lời một câu hỏi — và để lại dấu chân của riêng bạn.</p>
+<div class="final-actions"><button class="primary-button" data-action="restart">XEM LẠI TỪ ĐẦU <span>↻</span></button><button class="ghost-button" data-action="home">VỀ TRANG ĐẦU</button></div>
+<div class="final-stamp">ĐÃ MỞ<br><b>01 SỔ</b></div></div></section>
+</div></main>
+
+<nav class="book-nav"><button id="prevPage" aria-label="Trang trước">←</button><div class="nav-track"><span id="navProgress"></span></div><button id="nextPage" aria-label="Trang sau">→</button></nav>
+
+<aside class="menu-panel" id="menuPanel"><button class="menu-close" id="menuClose">×</button><span class="eyebrow">MỤC LỤC</span><h2>Cuốn sổ<br><em>của bạn.</em></h2>
+<button data-go="1">01 · Lời mở đầu</button><button data-go="2">02 · Bản đồ hành trình</button><button data-go="3">03 · Một điểm dừng</button><button data-go="4">04 · Góc tư liệu</button><button data-go="5">05 · Nhật ký hành trình</button></aside>
+<div class="toast" id="toast"></div><script src="./script.js"></script>
+</body></html>
