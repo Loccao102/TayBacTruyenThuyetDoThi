@@ -20,6 +20,8 @@ export interface SiteData {
     title: string;
     duration: string;
     thumbnail: string;
+    url?: string;
+    youtubeId?: string;
   };
   interdisciplinary: {
     history: {
@@ -76,7 +78,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Khám phá Đền Mẫu Tây Thiên (Phim tài liệu)",
       duration: "06:24",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=800",
+      youtubeId: "8KqM3t3E83Y",
+      url: "https://www.youtube-nocookie.com/embed/8KqM3t3E83Y?autoplay=1"
     },
     interdisciplinary: {
       history: {
@@ -150,7 +154,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Mù Cang Chải: Bản tình ca giữa mây ngàn",
       duration: "08:15",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=800",
+      youtubeId: "8KqM3t3E83Y",
+      url: "https://www.youtube-nocookie.com/embed/8KqM3t3E83Y?autoplay=1"
     },
     interdisciplinary: {
       history: {
@@ -215,7 +221,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Ký ức hào hùng: Trận quyết chiến Điện Biên Phủ",
       duration: "09:40",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=800",
+      youtubeId: "q4nN7R_rVq4",
+      url: "https://www.youtube-nocookie.com/embed/q4nN7R_rVq4?autoplay=1"
     },
     interdisciplinary: {
       history: {
@@ -279,7 +287,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Huyền thoại Ông Hoàng Bảy trấn ải Bảo Hà",
       duration: "05:50",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong3.jpg?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong3.jpg?width=800",
+      youtubeId: "T4P3l-q8XvQ",
+      url: "https://www.youtube-nocookie.com/embed/T4P3l-q8XvQ?autoplay=1"
     },
     interdisciplinary: {
       history: {
@@ -335,7 +345,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Bí ẩn Dinh thự Vua Mèo Bắc Hà",
       duration: "07:18",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=800",
+      youtubeId: "wX8_3t-NqQY",
+      url: "https://www.youtube-nocookie.com/embed/wX8_3t-NqQY?autoplay=1"
     },
     interdisciplinary: {
       history: {
@@ -391,7 +403,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Sống mãi ngọn lửa đồi Khau Cả",
       duration: "08:45",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=800",
+      youtubeId: "nE1h_7yYq08",
+      url: "https://www.youtube-nocookie.com/embed/nE1h_7yYq08?autoplay=1"
     },
     interdisciplinary: {
       history: {
@@ -447,7 +461,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Chinh phục Ô Quy Hồ: Đỉnh đèo mây ngàn",
       duration: "06:12",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=800",
+      youtubeId: "yqYw7_f7l1A",
+      url: "https://www.youtube-nocookie.com/embed/yqYw7_f7l1A?autoplay=1"
     },
     interdisciplinary: {
       history: {
@@ -503,7 +519,9 @@ export const HERITAGE_SITES: SiteData[] = [
     video: {
       title: "Mai Châu: Nét duyên miền sơn cước",
       duration: "05:30",
-      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong3.jpg?width=800"
+      thumbnail: "https://commons.wikimedia.org/wiki/Special:FilePath/Limmong3.jpg?width=800",
+      youtubeId: "zF2p7bB-070",
+      url: "https://www.youtube-nocookie.com/embed/zF2p7bB-070?autoplay=1"
     },
     interdisciplinary: {
       history: {

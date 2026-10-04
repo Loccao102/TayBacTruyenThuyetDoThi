@@ -28,7 +28,8 @@ export default function HomePage() {
   const handleOpenBook = (siteId?: string, tab?: string, page?: number) => {
     if (siteId) setTargetSiteId(siteId);
     if (tab) setTargetTab(tab);
-    setTargetPage(page ?? (siteId ? 3 : 0));
+    // When opening from home screen, directly jump to the heritage map page (Page 2)
+    setTargetPage(page ?? (siteId ? 3 : 2));
     setViewMode("book");
   };
 

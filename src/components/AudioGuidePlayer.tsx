@@ -14,7 +14,11 @@ import {
   FileText
 } from "lucide-react";
 import { playWoodBlockSound } from "@/utils/audioEffects";
-import { createFemaleUtterance, isSpeechSupported, useVietnameseFemaleVoice } from "@/utils/speech";
+import {
+  speakVietnameseFemale,
+  stopVietnameseSpeech,
+  useVietnameseFemaleVoice
+} from "@/utils/speech";
 
 interface AudioGuidePlayerProps {
   siteTitle: string;
@@ -29,8 +33,8 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
   const [showFullTranscript, setShowFullTranscript] = useState(false);
   const [activeSentenceIndex, setActiveSentenceIndex] = useState<number>(0);
 
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const cancelSpeechRef = useRef<(() => void) | null>(null);
   const voiceInfo = useVietnameseFemaleVoice();
 
   // Split narration into sentences for live karaoke highlighting
@@ -49,8 +53,10 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
   }, [siteTitle, narrationText]);
 
   const stopSpeech = () => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    stopVietnameseSpeech();
+    if (cancelSpeechRef.current) {
+      cancelSpeechRef.current();
+      cancelSpeechRef.current = null;
     }
     if (timerRef.current) clearInterval(timerRef.current);
     setIsPlaying(false);
@@ -68,53 +74,34 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
   };
 
   const startSpeech = (startFromSentence: number = 0) => {
-    if (!isSpeechSupported()) return;
-
-    window.speechSynthesis.cancel();
+    stopSpeech();
 
     // Get slice of sentences starting from index
     const textToSpeak = sentences.slice(startFromSentence).join(" ").replace(/[*_#]/g, "");
     if (!textToSpeak) return;
 
-    const utterance = createFemaleUtterance(textToSpeak, voiceInfo, {
-      rate: speed,
-      volume: isMuted ? 0 : 1
-    });
-
     // Calculate duration estimate based on character count
     const totalChars = textToSpeak.length;
-    const totalEstSeconds = (totalChars / 13.5) / speed;
+    const totalEstSeconds = (totalChars / 13) / speed;
     let elapsed = 0;
 
-    // Boundary event to highlight sentences
-    utterance.onboundary = (event) => {
-      if (event.name === "sentence" || event.charIndex !== undefined) {
-        // Calculate which sentence we are in
-        let charAcc = 0;
-        for (let i = startFromSentence; i < sentences.length; i++) {
-          charAcc += sentences[i].length + 1;
-          if (event.charIndex < charAcc) {
-            setActiveSentenceIndex(i);
-            break;
-          }
-        }
+    const cancelFn = speakVietnameseFemale(
+      textToSpeak,
+      voiceInfo,
+      () => {
+        // onEnd
+        setIsPlaying(false);
+        setProgress(100);
+        setActiveSentenceIndex(sentences.length - 1);
+        if (timerRef.current) clearInterval(timerRef.current);
+      },
+      () => {
+        // onStart
+        setIsPlaying(true);
       }
-    };
+    );
 
-    utterance.onend = () => {
-      setIsPlaying(false);
-      setProgress(100);
-      setActiveSentenceIndex(sentences.length - 1);
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-
-    utterance.onerror = () => {
-      setIsPlaying(false);
-      if (timerRef.current) clearInterval(timerRef.current);
-    };
-
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
+    cancelSpeechRef.current = cancelFn;
     setIsPlaying(true);
     setActiveSentenceIndex(startFromSentence);
 
@@ -124,7 +111,6 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
       const pct = Math.min(99, (elapsed / totalEstSeconds) * 100);
       setProgress(pct);
 
-      // Fallback timer-based sentence tracking if onboundary doesn't trigger
       const sentenceProgress = Math.min(
         sentences.length - 1,
         Math.floor((elapsed / totalEstSeconds) * (sentences.length - startFromSentence)) + startFromSentence
@@ -134,8 +120,10 @@ export default function AudioGuidePlayer({ siteTitle, narrationText }: AudioGuid
   };
 
   const pauseSpeech = () => {
-    if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
+    stopVietnameseSpeech();
+    if (cancelSpeechRef.current) {
+      cancelSpeechRef.current();
+      cancelSpeechRef.current = null;
     }
     if (timerRef.current) clearInterval(timerRef.current);
     setIsPlaying(false);

@@ -37,6 +37,8 @@ import { playPageFlipSound, playStampSound, playWoodBlockSound } from "@/utils/a
 import AudioGuidePlayer from "@/components/AudioGuidePlayer";
 import DragToFlipCorner from "@/components/DragToFlipCorner";
 import { EthnicBrocadeBorder, EthnicDivider, EthnicEmblem } from "@/components/EthnicBrocade";
+import HeritageVideoModal from "@/components/HeritageVideoModal";
+import HeritageMapCanvas from "@/components/HeritageMapCanvas";
 
 interface HeritageBookProps {
   initialOpen?: boolean;
@@ -60,7 +62,7 @@ export default function HeritageBook({
   // 3: Site Detail (Screens 5 - 9, 11, 12)
   // 4: Travel Journal & Badges (Screen 10)
   // 5: Journey End (Screen 14)
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(targetPage !== null && targetPage !== undefined ? targetPage : 2);
   const [isFlipping, setIsFlipping] = useState<"forward" | "backward" | null>(null);
 
   // Selected site for detail view
@@ -77,6 +79,15 @@ export default function HeritageBook({
   });
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [mapHoverSite, setMapHoverSite] = useState<SiteData | null>(null);
+
+  // Heritage Documentary Video Modal state
+  const [selectedVideo, setSelectedVideo] = useState<{
+    title: string;
+    duration?: string;
+    url?: string;
+    youtubeId?: string;
+    thumbnail?: string;
+  } | null>(null);
 
   // Quiz
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
@@ -511,8 +522,17 @@ export default function HeritageBook({
                       }}
                     >
                       <button
-                        onClick={handleNextPage}
-                        title="Khám phá bản đồ"
+                        onClick={() => {
+                          playWoodBlockSound();
+                          setSelectedVideo({
+                            title: "Khám phá Tây Bắc · Bản hùng ca ngàn năm",
+                            duration: "08:15",
+                            youtubeId: "8KqM3t3E83Y",
+                            url: "https://www.youtube.com/watch?v=8KqM3t3E83Y",
+                            thumbnail: "https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1200&q=80"
+                          });
+                        }}
+                        title="Xem phim tư liệu Tây Bắc"
                         style={{
                           width: 58,
                           height: 58,
@@ -714,166 +734,14 @@ export default function HeritageBook({
                     position: "relative"
                   }}
                 >
-                  <div
-                    style={{
-                      position: "relative",
-                      height: 520,
-                      background: "#e8deca",
-                      borderRadius: 8,
-                      border: "2px solid rgba(94, 69, 56, 0.2)",
-                      overflow: "hidden",
-                      backgroundImage:
-                        "radial-gradient(#d3c4a8 1px, transparent 1px), linear-gradient(rgba(100,70,50,0.04) 1px, transparent 1px)",
-                      backgroundSize: "20px 20px, 30px 30px"
-                    }}
-                  >
-                    {/* Antique Terrain Contours Vector */}
-                    <svg
-                      viewBox="0 0 500 500"
-                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.25 }}
-                    >
-                      <path d="M 50,120 Q 150,80 250,150 T 450,100" fill="none" stroke="#684735" strokeWidth="2" />
-                      <path d="M 80,240 Q 200,180 320,260 T 480,200" fill="none" stroke="#684735" strokeWidth="1.5" />
-                      <polygon points="120,180 150,130 180,180" fill="#758a7a" />
-                      <polygon points="170,190 210,120 250,190" fill="#758a7a" />
-                      <polygon points="320,220 360,150 400,220" fill="#758a7a" />
-                    </svg>
-
-                    {/* Regional Labels */}
-                    <div style={{ position: "absolute", top: "18%", left: "45%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
-                      Lào Cai
-                    </div>
-                    <div style={{ position: "absolute", top: "25%", left: "22%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
-                      Lai Châu
-                    </div>
-                    <div style={{ position: "absolute", top: "50%", left: "15%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
-                      Điện Biên
-                    </div>
-                    <div style={{ position: "absolute", top: "62%", left: "40%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
-                      Sơn La
-                    </div>
-                    <div style={{ position: "absolute", top: "36%", left: "55%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
-                      Yên Bái
-                    </div>
-                    <div style={{ position: "absolute", top: "72%", left: "65%", fontSize: "11px", fontStyle: "italic", color: "#7a5c4d" }}>
-                      Hòa Bình
-                    </div>
-
-                    {/* Compass */}
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 14,
-                        right: 14,
-                        fontSize: "10px",
-                        textAlign: "center",
-                        color: "var(--ink-secondary)",
-                        fontFamily: "var(--font-serif)"
-                      }}
-                    >
-                      <Compass size={20} color="var(--seal-cinnabar)" style={{ margin: "0 auto" }} />
-                      <span>BẮC</span>
-                    </div>
-
-                    {/* All 8 Pins on the map */}
-                    {filteredSites.map(site => {
-                      const isExplored = exploredSites.includes(site.id);
-                      return (
-                        <div
-                          key={site.id}
-                          onClick={() => handleSelectSiteFromMap(site)}
-                          onMouseEnter={() => setMapHoverSite(site)}
-                          style={{
-                            position: "absolute",
-                            top: `${site.coords.y}%`,
-                            left: `${site.coords.x}%`,
-                            transform: "translate(-50%, -50%)",
-                            cursor: "pointer",
-                            zIndex: 10
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: 24,
-                              height: 24,
-                              borderRadius: "50%",
-                              background: isExplored ? "var(--seal-cinnabar)" : "rgba(94, 69, 56, 0.45)",
-                              border: "2px solid #fff",
-                              boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              color: "#fff"
-                            }}
-                          >
-                            <MapPin size={13} />
-                          </div>
-                          <span
-                            style={{
-                              position: "absolute",
-                              top: "100%",
-                              left: "50%",
-                              transform: "translateX(-50%)",
-                              background: "rgba(43, 27, 21, 0.88)",
-                              color: "#fff",
-                              padding: "2px 6px",
-                              borderRadius: 4,
-                              fontSize: "9.5px",
-                              whiteSpace: "nowrap",
-                              pointerEvents: "none",
-                              marginTop: 2
-                            }}
-                          >
-                            {site.title}
-                          </span>
-                        </div>
-                      );
-                    })}
-
-                    {/* Popover Card */}
-                    {mapHoverSite && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: 16,
-                          right: 16,
-                          width: 240,
-                          background: "var(--paper-ivory)",
-                          borderRadius: 6,
-                          border: "1px solid rgba(181, 140, 73, 0.4)",
-                          boxShadow: "0 6px 20px rgba(0,0,0,0.25)",
-                          padding: "12px",
-                          zIndex: 20
-                        }}
-                      >
-                        <h4 style={{ fontSize: "12px", color: "var(--ink-primary)", margin: "0 0 2px" }}>
-                          {mapHoverSite.title}
-                        </h4>
-                        <span style={{ fontSize: "10px", color: "var(--ink-muted)", display: "block", marginBottom: 6 }}>
-                          {mapHoverSite.province} · {mapHoverSite.categoryName}
-                        </span>
-                        <div style={{ display: "flex", alignItems: "center", gap: 3, color: "var(--gold-bright)", fontSize: "11px", marginBottom: 8 }}>
-                          <Star size={12} fill="var(--gold-bright)" color="var(--gold-bright)" />
-                          <span>{mapHoverSite.rating} ({mapHoverSite.reviewsCount})</span>
-                        </div>
-                        <button
-                          onClick={() => handleSelectSiteFromMap(mapHoverSite)}
-                          style={{
-                            width: "100%",
-                            padding: "6px",
-                            background: "var(--leather-base)",
-                            color: "#fff",
-                            borderRadius: 4,
-                            fontSize: "10.5px",
-                            fontWeight: 600,
-                            textAlign: "center"
-                          }}
-                        >
-                          Xem chi tiết di tích →
-                        </button>
-                      </div>
-                    )}
-                  </div>
+                  <HeritageMapCanvas
+                    sites={filteredSites}
+                    selectedSite={selectedSite}
+                    exploredSites={exploredSites}
+                    provinceFilter={provinceFilter}
+                    onSelectSite={handleSelectSiteFromMap}
+                    style={{ height: 520 }}
+                  />
 
                   {/* Navigation controls */}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
@@ -1214,18 +1082,25 @@ export default function HeritageBook({
                         <VideoIcon size={16} color="var(--seal-cinnabar)" /> Phim tài liệu
                       </h4>
                       <div
+                        onClick={() => {
+                          playWoodBlockSound();
+                          setSelectedVideo(selectedSite.video);
+                        }}
+                        title={`Phát video: ${selectedSite.video.title}`}
                         style={{
                           position: "relative",
                           height: 180,
                           borderRadius: 6,
                           overflow: "hidden",
-                          background: "#160b08"
+                          background: "#160b08",
+                          cursor: "pointer",
+                          boxShadow: "0 4px 14px rgba(0,0,0,0.25)"
                         }}
                       >
                         <img
                           src={selectedSite.video.thumbnail}
                           alt={selectedSite.video.title}
-                          style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.7 }}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", opacity: 0.75, transition: "transform 0.3s ease" }}
                         />
                         <div
                           style={{
@@ -1233,7 +1108,8 @@ export default function HeritageBook({
                             inset: 0,
                             display: "flex",
                             alignItems: "center",
-                            justifyContent: "center"
+                            justifyContent: "center",
+                            background: "rgba(0,0,0,0.2)"
                           }}
                         >
                           <div
@@ -1241,12 +1117,13 @@ export default function HeritageBook({
                               width: 48,
                               height: 48,
                               borderRadius: "50%",
-                              background: "rgba(250, 246, 238, 0.92)",
+                              background: "rgba(250, 246, 238, 0.95)",
                               color: "var(--leather-base)",
                               display: "flex",
                               alignItems: "center",
                               justifyContent: "center",
-                              cursor: "pointer"
+                              boxShadow: "0 4px 16px rgba(0,0,0,0.4)",
+                              transition: "transform 0.2s ease"
                             }}
                           >
                             <Play size={18} fill="currentColor" style={{ marginLeft: 2 }} />
@@ -1946,6 +1823,13 @@ export default function HeritageBook({
             </button>
           </div>
         )}
+
+        {/* Heritage Cinema Documentary Video Modal */}
+        <HeritageVideoModal
+          isOpen={!!selectedVideo}
+          onClose={() => setSelectedVideo(null)}
+          video={selectedVideo}
+        />
       </div>
     </div>
   );

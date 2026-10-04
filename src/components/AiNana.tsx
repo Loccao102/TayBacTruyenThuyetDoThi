@@ -18,7 +18,11 @@ import {
   Award,
   ChevronRight
 } from "lucide-react";
-import { createFemaleUtterance, isSpeechSupported, useVietnameseFemaleVoice } from "@/utils/speech";
+import {
+  speakVietnameseFemale,
+  stopVietnameseSpeech,
+  useVietnameseFemaleVoice
+} from "@/utils/speech";
 
 interface AiNanaProps {
   onOpenSite: (siteId: string) => void;
@@ -106,11 +110,11 @@ export default function AiNana({
 
   // Text-to-speech for Vietnamese (female voice). `force` bypasses stale toggle state.
   const speakText = (text: string, force = false) => {
-    if ((!isVoiceEnabled && !force) || !isSpeechSupported()) return;
+    if (!isVoiceEnabled && !force) return;
     try {
-      window.speechSynthesis.cancel();
+      stopVietnameseSpeech();
       const cleanText = text.replace(/[*_#]/g, "");
-      window.speechSynthesis.speak(createFemaleUtterance(cleanText, voiceInfo, { rate: 0.97 }));
+      speakVietnameseFemale(cleanText, voiceInfo);
     } catch {}
   };
 
@@ -441,7 +445,11 @@ export default function AiNana({
                 onClick={() => {
                   const nextVoice = !isVoiceEnabled;
                   setIsVoiceEnabled(nextVoice);
-                  if (nextVoice) speakText("Đã bật giọng nói thuyết minh tiếng Việt của Nana!", true);
+                  if (nextVoice) {
+                    speakText("Đã bật giọng nói thuyết minh tiếng Việt của Nana!", true);
+                  } else {
+                    stopVietnameseSpeech();
+                  }
                 }}
                 title={isVoiceEnabled ? "Tắt giọng nói Nana" : "Bật giọng nói tiếng Việt của Nana"}
                 style={{
