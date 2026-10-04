@@ -1,87 +1,859 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#2b1713">
-<title>Tây Bắc — Nhật ký di sản</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#160c0a">
+  <meta name="description" content="Tạp chí di sản và truyền thuyết đô thị Tây Bắc — Cuốn sổ tương tác lưu giữ những huyền tích ngàn năm, di tích lịch sử và văn hóa các dân tộc vùng cao.">
+  <title>Tây Bắc — Tạp Chí Di Sản & Huyền Tích Đô Thị</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,600;0,700;1,500&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,900;1,400;1,600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-<div class="grain"></div>
-<div class="page-loader"><div class="loader-mark">TÂY BẮC</div><div class="loader-line"><span></span></div></div>
-<header class="topbar">
-<button class="brand" data-action="home"><span class="brand-mark">✦</span><span>TÂY BẮC</span></button>
-<div class="topbar-meta"><span>NHẬT KÝ DI SẢN</span><span class="page-count"><b id="pageCurrent">01</b> / 05</span></div>
-<button class="menu-button" id="menuButton" aria-label="Mở menu"><span></span><span></span></button>
-</header>
+  <!-- Grain Overlay -->
+  <div class="grain-overlay"></div>
 
-<main class="book-shell">
-<div class="book-glow"></div>
-<div class="book" id="book">
-<section class="spread spread-cover active">
-<div class="cover-art">
-<div class="cover-photo"></div><div class="cover-vignette"></div>
-<div class="cover-ornament top">❧</div>
-<div class="cover-copy"><span class="eyebrow">NHẬT KÝ DI SẢN · 2026</span>
-<h1>Khám phá<br><em>Tây Bắc</em></h1>
-<p>Những vùng đất, câu chuyện và dấu tích được kể lại bằng một cuốn sổ tương tác.</p>
-<button class="primary-button" id="openBook">MỞ SỔ <span>↗</span></button></div>
-<div class="cover-note">Mỗi vùng đất đều có một câu chuyện.</div><div class="cover-ornament bottom">❧</div>
-</div><div class="paper-edge"></div>
-</section>
+  <!-- Topbar Header -->
+  <header class="topbar">
+    <div class="brand-wrapper">
+      <span class="brand-mark">✦</span>
+      <div class="brand-title">
+        <span class="main-name">TÂY BẮC JOURNAL</span>
+        <span class="sub-name">NHẬT KÝ DI SẢN & KỲ BÍ</span>
+      </div>
+    </div>
 
-<section class="spread">
-<div class="page left-page intro-page"><div class="page-number">01</div><span class="eyebrow">LỜI MỞ ĐẦU</span>
-<h2>Mở một trang.<br><em>Gặp một vùng đất.</em></h2><div class="rule"></div>
-<p class="lead">Tây Bắc không chỉ được tạo nên bởi những dãy núi. Đó còn là ký ức, con người, những công trình và câu chuyện đã ở lại qua nhiều thế hệ.</p>
-<p>Cuốn sổ này là một cách để đi qua những câu chuyện ấy — chậm hơn một chút, tò mò hơn một chút.</p>
-<div class="signature">— Nhật ký hành trình</div></div>
-<div class="page right-page photo-page"><div class="photo-frame"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=1400" alt="Ruộng bậc thang La Pán Tẩn, Mù Cang Chải"><span class="photo-caption">La Pán Tẩn · Mù Cang Chải</span></div>
-<div class="stamp">TÂY BẮC<br><small>HERITAGE</small></div></div>
-</section>
+    <nav aria-label="Menu chính">
+      <ul class="nav-links">
+        <li><a href="#hero" class="nav-link active">Trang chủ</a></li>
+        <li><a href="#featured" class="nav-link">Tiêu điểm</a></li>
+        <li><a href="#heritage-map" class="nav-link">Bản đồ di sản</a></li>
+        <li><a href="#stories" class="nav-link">Phóng sự & Huyền tích</a></li>
+        <li><a href="#footer" class="nav-link">Về dự án</a></li>
+      </ul>
+    </nav>
 
-<section class="spread map-spread">
-<div class="page left-page map-copy"><div class="page-number">02</div><span class="eyebrow">BẢN ĐỒ HÀNH TRÌNH</span>
-<h2>Đi đâu<br><em>hôm nay?</em></h2><p>Chọn một điểm trên bản đồ để mở câu chuyện về nơi ấy.</p>
-<div class="legend"><span><i class="dot explored"></i> Đã khám phá</span><span><i class="dot"></i> Điểm đến</span></div>
-<button class="text-button" id="discoverButton">KHÁM PHÁ MỘT ĐIỂM <span>→</span></button></div>
-<div class="page right-page map-page"><div class="map-paper">
-<div class="contour contour-a"></div><div class="contour contour-b"></div><div class="contour contour-c"></div>
-<div class="mountain mountain-a"></div><div class="mountain mountain-b"></div>
-<div class="map-label label-1">Lào Cai</div><div class="map-label label-2">Yên Bái</div><div class="map-label label-3">Điện Biên</div>
-<button class="map-pin pin-1" data-place="Mù Cang Chải"><span></span></button><button class="map-pin pin-2" data-place="Điện Biên Phủ"><span></span></button><button class="map-pin pin-3" data-place="Sa Pa"><span></span></button>
-<div class="map-tooltip" id="mapTooltip"></div><div class="compass">N<br><span>✦</span></div></div><div class="map-credit">Bản đồ minh họa · không dùng cho định vị</div></div>
-</section>
+    <div class="topbar-actions">
+      <!-- Ambient Northwest Audio Button -->
+      <button class="btn-audio" id="btnAudio" title="Bật/Tắt âm thanh sáo núi & gió ngàn Tây Bắc" aria-label="Âm thanh nền Tây Bắc">
+        <div class="audio-bars"><span></span><span></span><span></span></div>
+        <span id="audioLabel">Bật âm thanh</span>
+      </button>
 
-<section class="spread story-spread">
-<div class="page left-page story-photo"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=1400" alt="Mù Cang Chải"><div class="image-overlay"></div><span class="vertical-note">MÙ CANG CHẢI · YÊN BÁI</span></div>
-<div class="page right-page story-copy"><div class="page-number">03</div><span class="eyebrow">MỘT ĐIỂM DỪNG</span>
-<h2>Mù Cang Chải<br><em>mùa nước đổ</em></h2><p class="lead">Có những nơi không cần nói lớn. Chỉ cần nhìn đủ lâu, người ta sẽ bắt đầu nghe thấy câu chuyện của nó.</p>
-<p>Những thửa ruộng bậc thang nối nhau theo sườn núi tạo nên một cảnh quan vừa tự nhiên vừa do bàn tay con người kiến tạo.</p>
-<div class="story-meta"><span>01 · Địa danh</span><span>02 · Cảnh quan</span><span>03 · Câu chuyện</span></div>
-<button class="primary-button small" id="turnStory">MỞ CÂU CHUYỆN <span>→</span></button></div>
-</section>
+      <!-- Passport & Badges Pill -->
+      <div class="passport-pill" id="passportPill" title="Xem Sổ tay hành trình & Huy hiệu của bạn">
+        <span class="badge-dot"></span>
+        <span>Sổ tay: </span>
+        <b id="passportCounter">0/6 Điểm</b>
+      </div>
 
-<section class="spread archive-spread">
-<div class="page left-page archive-copy"><div class="page-number">04</div><span class="eyebrow">GÓC TƯ LIỆU</span>
-<h2>Những gì<br><em>còn ở lại.</em></h2>
-<div class="archive-card"><span class="archive-index">A / 01</span><h3>Ruộng bậc thang Lìm Mông</h3><p>Một lát cắt của cảnh quan Tây Bắc — nơi địa hình và đời sống cùng tạo nên một di sản sống.</p><span class="archive-arrow">↗</span></div>
-<div class="archive-card muted"><span class="archive-index">A / 02</span><h3>Điện Biên Phủ</h3><p>Trang tiếp theo đang chờ được mở.</p><span class="archive-arrow">↗</span></div></div>
-<div class="page right-page gallery-page"><div class="gallery-main"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Limmong3.jpg?width=1400" alt="Ruộng bậc thang Lìm Mông"></div>
-<div class="gallery-strip"><img src="https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=700" alt=""><div class="gallery-note">Tư liệu hình ảnh<br><b>Lìm Mông</b></div></div></div>
-</section>
+      <!-- Quick Open Book CTA -->
+      <button class="btn-open-book-nav" id="btnOpenBookNav">
+        <span>MỞ SỔ DI SẢN</span>
+        <span>↗</span>
+      </button>
 
-<section class="spread final-spread"><div class="final-inner"><span class="eyebrow">NHẬT KÝ HÀNH TRÌNH</span>
-<h2>Một cuốn sổ.<br><em>Nhiều câu chuyện.</em></h2><p>Khám phá một di tích, đọc một câu chuyện, trả lời một câu hỏi — và để lại dấu chân của riêng bạn.</p>
-<div class="final-actions"><button class="primary-button" data-action="restart">XEM LẠI TỪ ĐẦU <span>↻</span></button><button class="ghost-button" data-action="home">VỀ TRANG ĐẦU</button></div>
-<div class="final-stamp">ĐÃ MỞ<br><b>01 SỔ</b></div></div></section>
-</div></main>
+      <button class="mobile-toggle" id="mobileToggle" aria-label="Mở menu di động">☰</button>
+    </div>
+  </header>
 
-<nav class="book-nav"><button id="prevPage" aria-label="Trang trước">←</button><div class="nav-track"><span id="navProgress"></span></div><button id="nextPage" aria-label="Trang sau">→</button></nav>
+  <!-- Hero Editorial Cover (Artboards 1 & 2) -->
+  <section class="hero-editorial" id="hero">
+    <div class="hero-bg-layer"></div>
+    <div class="hero-vignette"></div>
 
-<aside class="menu-panel" id="menuPanel"><button class="menu-close" id="menuClose">×</button><span class="eyebrow">MỤC LỤC</span><h2>Cuốn sổ<br><em>của bạn.</em></h2>
-<button data-go="1">01 · Lời mở đầu</button><button data-go="2">02 · Bản đồ hành trình</button><button data-go="3">03 · Một điểm dừng</button><button data-go="4">04 · Góc tư liệu</button><button data-go="5">05 · Nhật ký hành trình</button></aside>
-<div class="toast" id="toast"></div><script src="./script.js"></script>
-</body></html>
+    <div class="hero-content">
+      <div class="eyebrow-tag">
+        <span class="sparkle">✦</span>
+        <span>Ấn Phẩm Khám Phá Đặc Biệt · 2026</span>
+      </div>
+
+      <h1 class="hero-title">
+        Khám Phá Tây Bắc
+        <em>Nhật Ký Di Sản & Những Huyền Tích Kỳ Bí</em>
+      </h1>
+
+      <p class="hero-lead">
+        Từ đỉnh Fansipan quanh năm mây phủ đến những thung lũng nghìn bậc thang Mù Cang Chải — mỗi tấc đất Tây Bắc đều cất giữ một huyền thoại. Mời bạn lần giở từng trang để lắng nghe tiếng vọng ngàn năm của non sông.
+      </p>
+
+      <div class="hero-actions">
+        <button class="btn-primary-hero" id="btnOpenHeroBook">
+          <span>MỞ SỔ NHẬT KÝ DI SẢN</span>
+          <span>↗</span>
+        </button>
+        <a href="#featured" class="btn-secondary-hero">
+          <span>ĐỌC BẢN TIN ĐIỀN DÃ</span>
+          <span>↓</span>
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-item">
+          <span class="stat-number">06</span>
+          <span class="stat-label">Tỉnh miền biên ải</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">30+</span>
+          <span class="stat-label">Di tích & Thắng cảnh</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">100%</span>
+          <span class="stat-label">Tương tác Sổ tay 3D</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Breaking Heritage News Ticker -->
+  <div class="breaking-ticker" aria-label="Điểm tin di sản">
+    <div class="ticker-badge">
+      <span>✦</span>
+      <span>ĐIỂM TIN DI SẢN</span>
+    </div>
+    <div class="ticker-marquee">
+      <div class="ticker-item">
+        <span>Khai mạc mùa Lễ hội Tây Thiên xuân Bính Ngọ thu hút hàng vạn khách hành hương</span>
+        <span class="sep">✦</span>
+      </div>
+      <div class="ticker-item">
+        <span>Mù Cang Chải bước vào mùa nước đổ: Những tấm gương trời lấp lánh sườn đèo Khau Phạ</span>
+        <span class="sep">✦</span>
+      </div>
+      <div class="ticker-item">
+        <span>Bảo tồn nguyên trạng hệ thống hào công sự Đồi A1 trong quần thể di tích Điện Biên Phủ</span>
+        <span class="sep">✦</span>
+      </div>
+      <div class="ticker-item">
+        <span>Giải mã các ký tự hoa sen và hình rồng thế kỷ 16 trên Tháp cổ Mường Luân</span>
+        <span class="sep">✦</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Featured Investigation / Lead Story (Artboard 5 Inspired) -->
+  <section class="section-wrapper" id="featured">
+    <div class="section-header">
+      <span class="section-kicker">HỒ SƠ ĐẶC BIỆT · KỲ BÍ & DI SẢN</span>
+      <h2 class="section-title">Nơi Non Thiêng Hội Tụ Của Đất Trời</h2>
+      <p class="section-subtitle">
+        Một hành trình ngược thời gian về non ngàn Tam Đảo — nơi câu chuyện về vị Quốc Mẫu thời Vua Hùng và cái nôi Phật giáo sơ khai hòa quyện vào làn mây sương huyền ảo.
+      </p>
+    </div>
+
+    <div class="featured-editorial-card">
+      <div class="featured-media">
+        <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=1200" alt="Đền Mẫu Tây Thiên bồng bềnh mây trắng" loading="lazy">
+        <div class="featured-media-badge">ĐỀN / MIẾU LINH THIÊNG</div>
+        <div class="featured-caption">
+          Đền Mẫu Tây Thiên · Cửa ngõ non thiêng Tây Bắc
+        </div>
+      </div>
+
+      <div class="featured-text">
+        <div class="featured-tags">
+          <span class="tag-badge">#QuốcMẫuLăngThịTiêu</span>
+          <span class="tag-badge">#TínNgưỡngThờMẫu</span>
+          <span class="tag-badge">#TamĐảoSơnTrụ</span>
+        </div>
+
+        <h3 class="featured-title">
+          Đền Mẫu Tây Thiên: Huyền Tích Người Mẹ Xứ Núi Phò Vua Giữ Nước
+        </h3>
+
+        <div class="quote-highlight">
+          “Nơi linh thiêng hội tụ của đất trời và lòng người — Mỗi bậc đá rêu phong dẫn lên đỉnh Thạch Bàn đều mang hơi thở của tiền nhân ngàn năm trước.”
+        </div>
+
+        <p class="featured-excerpt">
+          Tương truyền từ thời Hùng Chiêu Vương, bà Lăng Thị Tiêu đã chiêu mộ hào kiệt, giúp triều đình đánh tan giặc phương Bắc, sau đó đem nghề nông trang truyền dạy cho con dân bản địa. Khám phá hồ sơ di tích đa góc nhìn với ảnh tư liệu, video và bài học liên môn hấp dẫn.
+        </p>
+
+        <div class="featured-footer">
+          <div class="author-info">
+            <div class="author-avatar">ĐB</div>
+            <div class="author-meta">
+              <span class="author-name">Ban Điền Dã Di Sản</span>
+              <span class="read-time">8 phút đọc · 6 tài liệu lưu trữ</span>
+            </div>
+          </div>
+
+          <button class="btn-open-dossier" id="btnOpenFeaturedDossier">
+            <span>LẬT TRANG SỔ ĐỌC</span>
+            <span>📖</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Heritage Map (Artboard 4) -->
+  <section class="section-wrapper map-section" id="heritage-map">
+    <div class="section-header">
+      <span class="section-kicker">ĐỊA ĐỒ DI SẢN TƯƠNG TÁC</span>
+      <h2 class="section-title">Hành Trình Qua 6 Tỉnh Tây Bắc</h2>
+      <p class="section-subtitle">
+        Khám phá các di tích tiêu biểu, danh lam thắng cảnh và địa điểm kỳ bí được định vị trên bản đồ phong cách phiêu lưu giấy da cổ điển. Bấm vào điểm mốc để mở xem nhanh.
+      </p>
+    </div>
+
+    <!-- Map Control Filters -->
+    <div class="map-control-bar">
+      <div class="filter-group">
+        <span class="filter-label">Loại di tích:</span>
+        <button class="filter-chip active" data-category="all">Tất cả (06)</button>
+        <button class="filter-chip" data-category="temple">Đền / Miếu</button>
+        <button class="filter-chip" data-category="scenery">Danh lam thắng cảnh</button>
+        <button class="filter-chip" data-category="history">Di tích lịch sử</button>
+        <button class="filter-chip" data-category="mystery">Kỳ bí / Truyền thuyết</button>
+      </div>
+
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="mapSearchInput" placeholder="Tìm tên di tích, địa danh..." aria-label="Tìm kiếm di tích">
+      </div>
+    </div>
+
+    <!-- Map Display Canvas -->
+    <div class="map-display-board" id="mapBoard">
+      <!-- Antique Terrain Contours SVG Background -->
+      <svg class="map-terrain-svg" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 50,150 Q 200,80 400,180 T 800,120 T 1200,200" fill="none" stroke="rgba(120, 80, 50, 0.22)" stroke-width="2" stroke-dasharray="6,4" />
+        <path d="M 80,240 Q 300,160 550,280 T 950,220 T 1300,320" fill="none" stroke="rgba(120, 80, 50, 0.18)" stroke-width="1.5" />
+        <path d="M 30,360 Q 260,300 480,420 T 880,360 T 1250,450" fill="none" stroke="rgba(120, 80, 50, 0.2)" stroke-width="2" />
+        <!-- Stylized Mountain Peaks -->
+        <polygon points="280,180 320,120 360,180" fill="rgba(80, 110, 85, 0.12)" stroke="rgba(70, 95, 75, 0.3)" />
+        <polygon points="340,190 390,110 440,190" fill="rgba(80, 110, 85, 0.15)" stroke="rgba(70, 95, 75, 0.35)" />
+        <polygon points="720,240 780,150 840,240" fill="rgba(80, 110, 85, 0.14)" stroke="rgba(70, 95, 75, 0.3)" />
+      </svg>
+
+      <!-- Compass Rose -->
+      <div class="map-compass">
+        <span>✦</span>
+        N<br><small>BẮC</small>
+      </div>
+
+      <!-- Map Legend -->
+      <div class="map-legend-box">
+        <div class="legend-title">Ký hiệu bản đồ</div>
+        <div class="legend-items">
+          <div class="legend-item"><span class="legend-pin-dot temple"></span> Đền / Miếu linh thiêng</div>
+          <div class="legend-item"><span class="legend-pin-dot scenery"></span> Danh thắng thiên nhiên</div>
+          <div class="legend-item"><span class="legend-pin-dot history"></span> Di tích lịch sử</div>
+          <div class="legend-item"><span class="legend-pin-dot mystery"></span> Địa điểm kỳ bí</div>
+        </div>
+      </div>
+
+      <!-- Pins Container -->
+      <div id="mapPinsContainer"></div>
+
+      <!-- Map Preview Popup Card -->
+      <div class="map-popup-card" id="mapPopupCard">
+        <div class="popup-img-wrap">
+          <img id="popupImg" src="" alt="Ảnh di tích">
+          <button class="popup-close" id="btnPopupClose">×</button>
+        </div>
+        <div class="popup-content">
+          <span class="popup-province" id="popupProvince">Tỉnh thành</span>
+          <h4 class="popup-title" id="popupTitle">Tên di tích</h4>
+          <p class="popup-desc" id="popupDesc">Mô tả ngắn...</p>
+          <button class="btn-popup-explore" id="btnPopupExplore" data-site-id="">MỞ CUỐN SỔ CHI TIẾT ↗</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Editorial Stories & Investigations Feed (Grid Phóng sự & Truyền thuyết) -->
+  <section class="section-wrapper" id="stories">
+    <div class="section-header">
+      <span class="section-kicker">BÀI VIẾT & PHÓNG SỰ ĐIỀN DÃ</span>
+      <h2 class="section-title">Hồ Sơ Truyền Thuyết Đô Thị & Di Sản</h2>
+      <p class="section-subtitle">
+        Tổng hợp các bài điều tra, ghi chép văn hóa và huyền tích dân gian truyền đời của đồng bào Tây Bắc. Bấm vào bài viết để lật trang sổ đọc chi tiết.
+      </p>
+    </div>
+
+    <div class="stories-grid">
+      <!-- Story Card 1 -->
+      <article class="story-card">
+        <div class="story-thumb">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Mu_Cang_Chai_02.JPG?width=800" alt="Mù Cang Chải mùa nước đổ" loading="lazy">
+          <span class="story-category-tag">DANH THẮNG KỲ VĨ</span>
+        </div>
+        <div class="story-body">
+          <div class="story-meta">
+            <span>Yên Bái</span>
+            <span>•</span>
+            <span>10 phút đọc</span>
+            <span>•</span>
+            <span>5.0 ★</span>
+          </div>
+          <h3 class="story-title">Mù Cang Chải: Tuyệt Tác Ruộng Bậc Thang Của Người Mông</h3>
+          <p class="story-summary">
+            Hành trình khám phá Đồi Mâm Xôi La Pán Tẩn và Đồi Móng Ngựa Sáng Nhù — nơi nghệ thuật dẫn nước trên đỉnh đèo Khau Phạ thách thức mọi quy luật xói mòn.
+          </p>
+          <div class="story-card-footer">
+            <button class="btn-read-story" data-open-site="mu-cang-chai">
+              <span>LẬT TRANG SỔ ĐỌC</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Story Card 2 -->
+      <article class="story-card">
+        <div class="story-thumb">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=800" alt="Chiến trường Điện Biên Phủ" loading="lazy">
+          <span class="story-category-tag">LỊCH SỬ HÀO HÙNG</span>
+        </div>
+        <div class="story-body">
+          <div class="story-meta">
+            <span>Điện Biên</span>
+            <span>•</span>
+            <span>12 phút đọc</span>
+            <span>•</span>
+            <span>4.9 ★</span>
+          </div>
+          <h3 class="story-title">Chiến Trường Điện Biên Phủ: Ký Ức Đồi A1 & Mường Phăng</h3>
+          <p class="story-summary">
+            Hồi ức 56 ngày đêm khoét núi ngủ hầm, câu chuyện đường hầm bộc phá 1 tấn xuyên lòng đồi A1 và Sở chỉ huy ẩn mình trong đại ngàn Mường Phăng.
+          </p>
+          <div class="story-card-footer">
+            <button class="btn-read-story" data-open-site="dien-bien-phu">
+              <span>LẬT TRANG SỔ ĐỌC</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Story Card 3 -->
+      <article class="story-card">
+        <div class="story-thumb">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=800" alt="Dinh Thự Hoàng A Tưởng Bắc Hà" loading="lazy">
+          <span class="story-category-tag">KỲ BÍ & KIẾN TRÚC</span>
+        </div>
+        <div class="story-body">
+          <div class="story-meta">
+            <span>Lào Cai</span>
+            <span>•</span>
+            <span>7 phút đọc</span>
+            <span>•</span>
+            <span>4.7 ★</span>
+          </div>
+          <h3 class="story-title">Dinh Hoàng A Tưởng: Lâu Đài Bí Ẩn Vùng Cao Nguyên Trắng</h3>
+          <p class="story-summary">
+            Giải mã phong thủy 'tựa sơn đạp thủy' của dinh thự Vua Mèo Bắc Hà xây dựng suốt 7 năm với tường lũy lỗ châu mai và những căn hầm bí mật thời thuộc địa.
+          </p>
+          <div class="story-card-footer">
+            <button class="btn-read-story" data-open-site="vua-meo">
+              <span>LẬT TRANG SỔ ĐỌC</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Story Card 4 -->
+      <article class="story-card">
+        <div class="story-thumb">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Limmong3.jpg?width=800" alt="Đền Bảo Hà Lào Cai" loading="lazy">
+          <span class="story-category-tag">TÂM LINH & TRẤN ẢI</span>
+        </div>
+        <div class="story-body">
+          <div class="story-meta">
+            <span>Lào Cai</span>
+            <span>•</span>
+            <span>6 phút đọc</span>
+            <span>•</span>
+            <span>4.8 ★</span>
+          </div>
+          <h3 class="story-title">Đền Bảo Hà: Oai Linh Thần Vệ Quốc Ông Hoàng Bảy</h3>
+          <p class="story-summary">
+            Truyền tích vị danh tướng dẹp giặc ngoại xâm phương Bắc, huyền thoại tuấn mã hóa đá bên bờ sông Hồng và thực hành tín ngưỡng thờ Mẫu Tam Phủ.
+          </p>
+          <div class="story-card-footer">
+            <button class="btn-read-story" data-open-site="bao-ha">
+              <span>LẬT TRANG SỔ ĐỌC</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Story Card 5 -->
+      <article class="story-card">
+        <div class="story-thumb">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Limmong1.jpg?width=800" alt="Tháp Cổ Mường Luân" loading="lazy">
+          <span class="story-category-tag">NGHỆ THUẬT CỔ</span>
+        </div>
+        <div class="story-body">
+          <div class="story-meta">
+            <span>Điện Biên</span>
+            <span>•</span>
+            <span>6 phút đọc</span>
+            <span>•</span>
+            <span>4.6 ★</span>
+          </div>
+          <h3 class="story-title">Tháp Mường Luân: Kiệt Tác Gạch Cổ Thế Kỷ 16 Bên Sông Mã</h3>
+          <p class="story-summary">
+            Ngọn tháp Phật giáo cao 15,5 mét xây bằng gạch vôi mật mía cổ truyền, lưu giữ tình hữu nghị gắn kết anh em Việt - Lào và lễ hội Té nước linh thiêng.
+          </p>
+          <div class="story-card-footer">
+            <button class="btn-read-story" data-open-site="muong-luan">
+              <span>LẬT TRANG SỔ ĐỌC</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <!-- Story Card 6 -->
+      <article class="story-card">
+        <div class="story-thumb">
+          <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Lapantan.jpg?width=800" alt="Đền Mẫu Tây Thiên" loading="lazy">
+          <span class="story-category-tag">ĐỀN / MIẾU CỔ</span>
+        </div>
+        <div class="story-body">
+          <div class="story-meta">
+            <span>Vĩnh Phúc</span>
+            <span>•</span>
+            <span>8 phút đọc</span>
+            <span>•</span>
+            <span>4.9 ★</span>
+          </div>
+          <h3 class="story-title">Đền Mẫu Tây Thiên: Cái Nôi Giao Thoa Đạo Phật & Thờ Mẫu</h3>
+          <p class="story-summary">
+            Hành trình leo nghìn bậc đá Thạch Bàn thưởng ngoạn cảnh sắc mây trời Tây Thiên, lắng nghe tiếng hát Soọng cô của đồng bào Sán Dìu dưới chân Tam Đảo.
+          </p>
+          <div class="story-card-footer">
+            <button class="btn-read-story" data-open-site="tay-thien">
+              <span>LẬT TRANG SỔ ĐỌC</span>
+              <span>→</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       INTERACTIVE BOOK READER MODAL (Artboards 5, 6, 7, 8, 9, 11, 12)
+       ========================================================================== -->
+  <div class="book-modal-backdrop" id="bookModalBackdrop" role="dialog" aria-modal="true" aria-label="Cuốn sổ di sản tương tác">
+    <div class="book-modal-container">
+      <!-- Book Top Header Bar -->
+      <div class="book-top-bar">
+        <div class="book-doc-title">
+          <span>✦ NHẬT KÝ DI SẢN TÂY BẮC · HỒ SƠ TƯ LIỆU ĐỘC BẢN</span>
+        </div>
+        <div class="book-controls">
+          <button class="btn-book-close" id="btnBookClose" title="Đóng cuốn sổ (Esc)">✕</button>
+        </div>
+      </div>
+
+      <!-- Book Two-Page Spread -->
+      <div class="book-spread">
+        <!-- Left Page: Cover Photo, Quote & Vintage Stamp -->
+        <div class="page-left">
+          <div class="page-cover-photo-wrap">
+            <img id="bookCoverImg" src="" alt="Ảnh trang bìa di tích">
+            <div class="page-cover-gradient"></div>
+            <div class="page-cover-badge">
+              <span id="bookHeroProvince">Tỉnh thành</span>
+              <h2 id="bookHeroTitle">Tên di tích</h2>
+            </div>
+          </div>
+
+          <div class="page-left-quote" id="bookHeroQuote">
+            “Nơi linh thiêng hội tụ của đất trời và lòng người...”
+          </div>
+
+          <div class="page-left-details">
+            <p>Cuốn sổ tay tư liệu này ghi lại những dấu ấn lịch sử, giá trị địa lý cảnh quan và chiều sâu văn hóa của di tích qua nhiều thời kỳ thăng trầm của dân tộc.</p>
+          </div>
+
+          <!-- Red Stamp "ĐÃ KHÁM PHÁ" (Artboard 11) -->
+          <div class="stamp-explored" id="stampExplored">
+            <div class="stamp-inner">
+              <span class="stamp-sub">TÂY BẮC HERITAGE</span>
+              <span class="stamp-main">ĐÃ KHÁM PHÁ</span>
+              <span class="stamp-date">✦ SỐ ĐẶC BIỆT ✦</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Page: Interactive Tabs & Multi-perspective Content -->
+        <div class="page-right">
+          <!-- Book Tabs (Artboard 5) -->
+          <div class="book-tabs-nav">
+            <button class="book-tab-btn active" data-tab="overview">
+              <span>📖</span> Tổng quan
+            </button>
+            <button class="book-tab-btn" data-tab="media">
+              <span>🖼️</span> Hình ảnh & Video
+            </button>
+            <button class="book-tab-btn" data-tab="interdisciplinary">
+              <span>🏛️</span> Liên môn (3 Góc nhìn)
+            </button>
+            <button class="book-tab-btn" data-tab="quiz">
+              <span>✏️</span> Thử thách Quiz
+            </button>
+            <button class="book-tab-btn" data-tab="facts">
+              <span>💡</span> Bạn có biết?
+            </button>
+            <button class="book-tab-btn" data-tab="reviews">
+              <span>⭐</span> Đánh giá & Ghi chú
+            </button>
+          </div>
+
+          <!-- Tab Content Body -->
+          <div class="tab-pane-content">
+            <!-- Tab 1: Tổng quan -->
+            <div class="tab-panel active" id="tab-overview">
+              <div class="article-header">
+                <span class="article-kicker" id="bookArticleKicker">HỒ SƠ DI SẢN</span>
+                <h3 class="article-title" id="bookArticleTitle">Tên di tích</h3>
+              </div>
+              <div id="bookArticleBody">
+                <!-- Dynamically injected -->
+              </div>
+            </div>
+
+            <!-- Tab 2: Hình ảnh & Video (Artboard 6) -->
+            <div class="tab-panel" id="tab-media">
+              <div class="article-header">
+                <span class="article-kicker">KHO TƯ LIỆU HÌNH ẢNH</span>
+                <h3 class="article-title">Những Khoảnh Khắc Lưu Giữ Vẻ Đẹp Di Sản</h3>
+              </div>
+              <div class="gallery-grid" id="bookGalleryGrid">
+                <!-- Dynamically injected -->
+              </div>
+
+              <div class="video-container">
+                <div class="video-mockup" title="Xem video phóng sự tài liệu">
+                  <div class="video-play-btn">▶</div>
+                </div>
+                <div class="video-info-strip">
+                  <span id="bookVideoTitle">Phóng sự tài liệu</span>
+                  <span id="bookVideoDuration">08:24</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 3: Khám phá Liên môn 3 Góc Nhìn (Artboard 7) -->
+            <div class="tab-panel" id="tab-interdisciplinary">
+              <div class="article-header">
+                <span class="article-kicker">GÓC NHÌN ĐA CHIỀU</span>
+                <h3 class="article-title">Khám Phá Di Tích Qua 3 Góc Nhìn Liên Môn</h3>
+              </div>
+              <div class="perspective-cards">
+                <!-- Angle 1: Lịch sử -->
+                <div class="perspective-card history">
+                  <div class="perspective-icon">🏛️</div>
+                  <h4>Lịch Sử</h4>
+                  <ul class="perspective-list" id="bookHistoryPoints">
+                    <!-- Points -->
+                  </ul>
+                </div>
+
+                <!-- Angle 2: Địa lí -->
+                <div class="perspective-card geo">
+                  <div class="perspective-icon">🌿</div>
+                  <h4>Địa Lí & Môi Trường</h4>
+                  <ul class="perspective-list" id="bookGeoPoints">
+                    <!-- Points -->
+                  </ul>
+                </div>
+
+                <!-- Angle 3: GD địa phương & Văn hóa -->
+                <div class="perspective-card culture">
+                  <div class="perspective-icon">🏮</div>
+                  <h4>GD Địa Phương</h4>
+                  <ul class="perspective-list" id="bookCulturePoints">
+                    <!-- Points -->
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tab 4: Thử thách Quiz (Artboard 8) -->
+            <div class="tab-panel" id="tab-quiz">
+              <div class="article-header">
+                <span class="article-kicker">THỬ THÁCH TRI THỨC</span>
+                <h3 class="article-title">Kiểm Tra Kiến Thức Di Sản</h3>
+              </div>
+              <div class="quiz-box">
+                <div class="quiz-header">
+                  <span class="quiz-counter">CÂU HỎI TƯƠNG TÁC</span>
+                  <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill"></div>
+                  </div>
+                </div>
+                <h4 class="quiz-question" id="bookQuizQuestion">Nội dung câu hỏi?</h4>
+                <div class="quiz-options" id="bookQuizOptions">
+                  <!-- Dynamically populated options -->
+                </div>
+                <div class="quiz-actions">
+                  <button class="btn-submit-quiz" id="btnSubmitQuiz">KIỂM TRA ĐÁP ÁN</button>
+                </div>
+                <div class="quiz-feedback" id="bookQuizFeedback"></div>
+              </div>
+            </div>
+
+            <!-- Tab 5: Facts / Bạn Có Biết? (Artboard 9) -->
+            <div class="tab-panel" id="tab-facts">
+              <div class="article-header">
+                <span class="article-kicker">GHI CHÉP THÚ VỊ</span>
+                <h3 class="article-title">Bạn Có Biết?</h3>
+              </div>
+              <div class="fact-note-card">
+                <div class="fact-badge">
+                  <span>💡</span>
+                  <span id="bookFactTitle">Thông tin bất ngờ</span>
+                </div>
+                <div class="fact-img-wrap">
+                  <img id="bookFactImg" src="" alt="Fact minh họa">
+                </div>
+                <p class="fact-text" id="bookFactText">Nội dung fact...</p>
+              </div>
+            </div>
+
+            <!-- Tab 6: Ghi chú & Đánh giá (Artboard 12) -->
+            <div class="tab-panel" id="tab-reviews">
+              <div class="article-header">
+                <span class="article-kicker">CẢM NHẬN ĐỘC GIẢ</span>
+                <h3 class="article-title">Đánh Giá & Ghi Chú Hành Trình</h3>
+              </div>
+
+              <div class="rating-overview">
+                <div class="rating-score">4.9</div>
+                <div>
+                  <div class="stars">★★★★★</div>
+                  <small style="color:var(--ink-muted);">Dựa trên 180+ lượt cảm nhận của bạn đọc</small>
+                </div>
+              </div>
+
+              <div class="comment-input-box">
+                <textarea id="commentInput" placeholder="Chia sẻ cảm nhận hoặc kỷ niệm của bạn về vùng đất này..."></textarea>
+                <button class="btn-post-comment" id="btnPostComment">GỬI CẢM NHẬN</button>
+                <div style="clear:both;"></div>
+              </div>
+
+              <div class="comments-list" id="commentsList">
+                <div class="comment-item">
+                  <div class="comment-user-avatar">M</div>
+                  <div class="comment-content">
+                    <span class="comment-author">Nguyễn Thị Mai</span>
+                    <span class="comment-date">12/03/2026</span>
+                    <div class="stars">★★★★★</div>
+                    <p class="comment-text">Thật sự rất ý nghĩa! Nội dung phong phú, hình ảnh đẹp, giúp mình hiểu hơn về chiều sâu văn hóa và lịch sử hào hùng Tây Bắc.</p>
+                  </div>
+                </div>
+
+                <div class="comment-item">
+                  <div class="comment-user-avatar">H</div>
+                  <div class="comment-content">
+                    <span class="comment-author">Hoàng Văn Nam</span>
+                    <span class="comment-date">28/02/2026</span>
+                    <div class="stars">★★★★★</div>
+                    <p class="comment-text">Hiệu ứng lật trang cuốn sổ và con dấu Đã khám phá tạo cảm giác như mình đang cầm trên tay một cuốn sổ nhật ký điền dã thật sự.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       PASSPORT & BADGES MODAL (Artboard 10)
+       ========================================================================== -->
+  <div class="passport-modal-backdrop" id="passportModal" role="dialog" aria-modal="true" aria-label="Sổ tay hành trình">
+    <div class="passport-card">
+      <div class="passport-header">
+        <div class="passport-title-wrap">
+          <h3>Sổ Tay Hành Trình & Danh Hiệu</h3>
+          <p>Lưu dấu những điểm di tích bạn đã khám phá trên nẻo đường Tây Bắc</p>
+        </div>
+        <button class="btn-book-close" id="btnPassportClose">✕</button>
+      </div>
+
+      <div class="passport-stats-row">
+        <div class="passport-stat-item">
+          <span>Điểm đã khám phá: </span>
+          <b id="passportExploredStat">0/6</b>
+        </div>
+        <div class="passport-stat-item">
+          <span>Huy hiệu đạt được: </span>
+          <b id="passportBadgesStat">0/3</b>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <!-- Badge 1: Explorer -->
+        <div class="badge-item" id="badge-explorer">
+          <div class="badge-icon">🧭</div>
+          <div class="badge-name">Explorer</div>
+          <div class="badge-desc">Khám phá ít nhất 2 di tích Tây Bắc.</div>
+        </div>
+
+        <!-- Badge 2: Historian -->
+        <div class="badge-item" id="badge-historian">
+          <div class="badge-icon">📜</div>
+          <div class="badge-name">Historian</div>
+          <div class="badge-desc">Vượt qua ít nhất 2 bài Quiz thử thách.</div>
+        </div>
+
+        <!-- Badge 3: Master -->
+        <div class="badge-item" id="badge-master">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Master</div>
+          <div class="badge-desc">Giải mã toàn bộ 6 di tích và đóng dấu tem.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       AI NANA VIRTUAL ASSISTANT (Artboard 13)
+       ========================================================================== -->
+  <div class="nana-floating-trigger" id="nanaTrigger" title="Trò chuyện cùng AI Nana">
+    <div class="nana-speech-bubble">
+      <span>Bạn muốn khám phá di tích nào? Hỏi Nana nhé! ✦</span>
+    </div>
+
+    <div class="nana-avatar-btn">
+      <!-- High Quality SVG Mascot of Highland Girl -->
+      <svg class="nana-svg-chibi" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Traditional Colorful Embroidered Highland Headdress -->
+        <ellipse cx="50" cy="38" rx="36" ry="16" fill="#8f2d22" stroke="#d4af37" stroke-width="2" />
+        <rect x="20" y="28" width="60" height="8" rx="4" fill="#204060" />
+        <circle cx="28" cy="32" r="3" fill="#d4af37" />
+        <circle cx="38" cy="32" r="3" fill="#ffffff" />
+        <circle cx="50" cy="32" r="3" fill="#e05030" />
+        <circle cx="62" cy="32" r="3" fill="#ffffff" />
+        <circle cx="72" cy="32" r="3" fill="#d4af37" />
+        <!-- Face -->
+        <ellipse cx="50" cy="52" rx="28" ry="24" fill="#ffe5cc" />
+        <!-- Hair strands -->
+        <path d="M 24,44 Q 28,62 30,70" stroke="#22110c" stroke-width="4" stroke-linecap="round" fill="none" />
+        <path d="M 76,44 Q 72,62 70,70" stroke="#22110c" stroke-width="4" stroke-linecap="round" fill="none" />
+        <!-- Big Cute Smiling Eyes -->
+        <ellipse cx="40" cy="50" rx="4" ry="5.5" fill="#22110c" />
+        <circle cx="41" cy="48" r="1.8" fill="#ffffff" />
+        <ellipse cx="60" cy="50" rx="4" ry="5.5" fill="#22110c" />
+        <circle cx="61" cy="48" r="1.8" fill="#ffffff" />
+        <!-- Rosy Cheeks -->
+        <ellipse cx="34" cy="57" rx="5" ry="3" fill="#ff9999" opacity="0.6" />
+        <ellipse cx="66" cy="57" rx="5" ry="3" fill="#ff9999" opacity="0.6" />
+        <!-- Gentle Smile -->
+        <path d="M 46,58 Q 50,63 54,58" stroke="#aa3322" stroke-width="2" stroke-linecap="round" fill="none" />
+        <!-- Collar with Silver Necklace & Brocade Pattern -->
+        <path d="M 32,74 Q 50,88 68,74 L 75,98 L 25,98 Z" fill="#1b2d42" />
+        <path d="M 38,76 Q 50,84 62,76" stroke="#d4af37" stroke-width="2.5" fill="none" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- AI Nana Chat Drawer -->
+  <aside class="nana-chat-drawer" id="nanaDrawer" role="complementary" aria-label="Trợ lý ảo AI Nana">
+    <div class="nana-chat-header">
+      <div class="nana-header-profile">
+        <h4>AI Nana ✦ Hướng Dẫn Viên</h4>
+        <span>Đồng hành cùng bạn khám phá Tây Bắc</span>
+      </div>
+      <button class="btn-book-close" id="btnNanaClose" title="Thu nhỏ chat">✕</button>
+    </div>
+
+    <div class="nana-chat-body" id="nanaChatBody">
+      <div class="chat-bubble nana">
+        Xin chào! Mình là <strong>Nana</strong>, người bạn đồng hành của bạn trên nẻo đường Tây Bắc. Bạn muốn tìm hiểu truyền thuyết nào, hay cần mình gợi ý điểm đến hôm nay?
+      </div>
+    </div>
+
+    <!-- Quick Prompt Suggestions -->
+    <div class="nana-quick-prompts">
+      <button class="quick-chip" data-prompt="Kể cho mình nghe về Đền Mẫu Tây Thiên">Đền Mẫu Tây Thiên</button>
+      <button class="quick-chip" data-prompt="Mù Cang Chải mùa nào đẹp nhất?">Mù Cang Chải mùa nào đẹp?</button>
+      <button class="quick-chip" data-prompt="Kể về chiến trường Điện Biên Phủ">Điện Biên Phủ</button>
+      <button class="quick-chip" data-prompt="Bí ẩn Dinh thự Vua Mèo Hoàng A Tưởng">Dinh Vua Mèo</button>
+      <button class="quick-chip" data-prompt="Làm thế nào để đạt huy hiệu và giải quiz?">Cách làm Quiz</button>
+    </div>
+
+    <div class="nana-chat-input-bar">
+      <input type="text" id="nanaInput" placeholder="Hỏi Nana điều gì đó về Tây Bắc..." aria-label="Nhập câu hỏi">
+      <button class="btn-nana-send" id="btnNanaSend" aria-label="Gửi câu hỏi">➤</button>
+    </div>
+  </aside>
+
+  <!-- Site Footer (Artboard 14 - Kết Thúc Hành Trình) -->
+  <footer class="site-footer" id="footer">
+    <div class="footer-cinematic-banner">
+      <span class="eyebrow-tag">✦ KẾT THÚC HÀNH TRÌNH ✦</span>
+      <h3>Còn Nhiều Câu Chuyện Đang Chờ Bạn Khám Phá...</h3>
+      <p>
+        Mỗi cung đường Tây Bắc, mỗi mái đền rêu phong và mỗi thửa ruộng bậc thang đều là một trang sử sống động. Hãy tiếp tục mở rộng bước chân và để lại dấu ấn của riêng bạn.
+      </p>
+      <button class="btn-primary-hero" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <span>VỀ ĐẦU TRANG BÁO</span>
+        <span>↑</span>
+      </button>
+    </div>
+
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h5>TÂY BẮC JOURNAL</h5>
+        <p style="font-size:13px; line-height:1.7; color:#bfa993; margin-top:8px;">
+          Nền tảng số hóa di sản và truyền thuyết đô thị 6 tỉnh Tây Bắc Việt Nam. Kết hợp báo chí tương tác hiện đại và trải nghiệm sổ tay điền dã cổ điển.
+        </p>
+      </div>
+
+      <div class="footer-col">
+        <h5>CHUYÊN MỤC</h5>
+        <ul>
+          <li><a href="#featured">Hồ sơ Tiêu điểm</a></li>
+          <li><a href="#heritage-map">Địa đồ Tây Bắc</a></li>
+          <li><a href="#stories">Phóng sự & Huyền tích</a></li>
+          <li><a href="javascript:void(0)" onclick="document.getElementById('passportPill').click()">Sổ tay & Huy hiệu</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>6 TỈNH MIỀN TÂY BẮC</h5>
+        <ul>
+          <li><a href="#heritage-map">Lào Cai (Bắc Hà, Sa Pa)</a></li>
+          <li><a href="#heritage-map">Yên Bái (Mù Cang Chải)</a></li>
+          <li><a href="#heritage-map">Điện Biên (Mường Thanh)</a></li>
+          <li><a href="#heritage-map">Sơn La & Lai Châu</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>TƯ LIỆU DỰ ÁN</h5>
+        <ul>
+          <li><a href="javascript:void(0)" onclick="window.bookReader.open('tay-thien')">Đền Mẫu Tây Thiên</a></li>
+          <li><a href="javascript:void(0)" onclick="window.bookReader.open('mu-cang-chai')">Ruộng bậc thang La Pán Tẩn</a></li>
+          <li><a href="javascript:void(0)" onclick="window.bookReader.open('dien-bien-phu')">Chiến hào Đồi A1</a></li>
+          <li><a href="javascript:void(0)" onclick="window.bookReader.open('vua-meo')">Dinh thự Hoàng A Tưởng</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 TÂY BẮC — NHẬT KÝ DI SẢN & KỲ BÍ. All rights reserved.</div>
+      <div>Designed with Modern Heritage Editorial & Antique Parchment System.</div>
+    </div>
+  </footer>
+
+  <script src="./script.js"></script>
+</body>
+</html>
