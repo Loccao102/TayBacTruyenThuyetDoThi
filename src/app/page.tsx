@@ -98,11 +98,13 @@ export default function HomePage() {
       {/* Ambient Flute & Mountain Wind Soundscape */}
       <AudioSoundscape />
 
-      {/* AI Nana Virtual Guide (Artboard 13) */}
+      {/* AI Nana Virtual Guide with Roaming Tour Mode */}
       <AiNana
         onOpenSite={(siteId) => handleOpenBook(siteId, "overview")}
         onOpenMap={handleOpenMap}
         onOpenQuiz={handleOpenQuiz}
+        onOpenHero={() => setViewMode("hero")}
+        currentView={viewMode}
       />
     </main>
   );

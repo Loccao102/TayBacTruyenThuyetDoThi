@@ -1,61 +1,65 @@
 /* ==========================================================================
    TÂY BẮC — NHẬT KÝ DI SẢN (HERITAGE NOTEBOOK)
-   Design System: Soft Handmade Paper (Giấy Dó), Warm Ink & Aged Gold
-   Faithful to the Original 14-Artboard Concept
+   Physical Antique Leather Book, Real Handmade Paper & Cultural Design System
    ========================================================================== */
 
 :root {
-  /* Soft, Meaningful Natural Heritage Color Palette */
-  --bg-table: #1e1310;
-  --bg-table-warm: #2c1a14;
-  --bg-table-dark: #120907;
+  /* Natural Heritage Color Palette */
+  --bg-table: #190f0c;
+  --bg-table-warm: #261611;
+  --bg-table-dark: #0e0705;
 
-  /* Handmade Dó Paper & Aged Parchment */
-  --paper-ivory: #faf6ee;
+  /* Real Handmade Dó Paper & Aged Parchment */
+  --paper-ivory: #faf5eb;
   --paper-parchment: #f4ecdc;
-  --paper-aged: #ece1cc;
-  --paper-card: #f9f4ea;
+  --paper-aged: #ebdfcb;
+  --paper-card: #f9f3e7;
+  --paper-edge: #d8c7ad;
   --paper-shadow: rgba(43, 27, 21, 0.12);
-  --paper-border: rgba(94, 69, 56, 0.16);
+  --paper-border: rgba(94, 69, 56, 0.18);
 
   /* Deep Natural Ink */
-  --ink-primary: #382823;
-  --ink-secondary: #5c443b;
-  --ink-muted: #876e63;
-  --ink-light: #b59f95;
+  --ink-primary: #382620;
+  --ink-secondary: #573e34;
+  --ink-muted: #82685c;
+  --ink-light: #b0998f;
 
-  /* Subtle Warm Accents */
+  /* Antique Gold & Brass */
   --accent-gold: #b58c49;
-  --accent-gold-soft: #d4af6d;
-  --accent-gold-pale: #f6ecda;
-  --accent-cinnabar: #a6382a;
-  --accent-cinnabar-soft: #f8ece9;
+  --accent-gold-soft: #d8b273;
+  --accent-gold-pale: #f7eedf;
+  --accent-brass: #8f6c31;
+
+  /* Cinnabar Woodblock Seal Red */
+  --accent-cinnabar: #a63527;
+  --accent-cinnabar-soft: #faefec;
   --accent-cinnabar-border: #deb0a7;
 
-  /* Three Multidisciplinary Pastel Tones (Screen 7) */
+  /* Multidisciplinary Pastel Tones (Screen 7) */
   --pastel-history-bg: #faefed;
-  --pastel-history-border: #e8bfb7;
-  --pastel-history-text: #963d30;
+  --pastel-history-border: #e6b8af;
+  --pastel-history-text: #963527;
 
   --pastel-geo-bg: #edf5ef;
-  --pastel-geo-border: #bddbc2;
-  --pastel-geo-text: #456d4e;
+  --pastel-geo-border: #b8dac0;
+  --pastel-geo-text: #3f6848;
 
-  --pastel-edu-bg: #fdf8ec;
-  --pastel-edu-border: #eddab3;
-  --pastel-edu-text: #967431;
+  --pastel-edu-bg: #fdf8eb;
+  --pastel-edu-border: #ebd6a8;
+  --pastel-edu-text: #8e6c27;
 
-  /* Leather Cover */
-  --leather-brown: #3f231b;
-  --leather-deep: #25120d;
+  /* Physical Leather Binding */
+  --leather-brown: #3a1e16;
+  --leather-dark: #22100b;
+  --leather-highlight: #522d22;
 
   /* Typography */
   --font-serif: "Playfair Display", "Cormorant Garamond", Georgia, serif;
   --font-sans: "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  /* Depth */
-  --shadow-book: 0 25px 70px rgba(0, 0, 0, 0.55), 0 5px 15px rgba(0, 0, 0, 0.25);
-  --shadow-page: inset 0 0 40px rgba(70, 45, 33, 0.04);
+  /* Realistic Physical Depth */
+  --shadow-book: 0 35px 85px rgba(0, 0, 0, 0.65), 0 10px 25px rgba(0, 0, 0, 0.35);
+  --shadow-spine: inset 0 0 50px rgba(58, 30, 22, 0.15);
 }
 
 *, *::before, *::after {
@@ -80,12 +84,12 @@ html, body {
   inset: 0;
   pointer-events: none;
   z-index: 99;
-  opacity: 0.11;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.12;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   mix-blend-mode: multiply;
 }
 
-/* Common Typography */
+/* Typography */
 h1, h2, h3, h4, .serif {
   font-family: var(--font-serif);
   font-weight: 600;
@@ -106,18 +110,162 @@ button {
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(43, 27, 21, 0.05);
+  background: rgba(43, 27, 21, 0.04);
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(181, 140, 73, 0.35);
-  border-radius: 3px;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(181, 140, 73, 0.6);
+}
+
+/* ==========================================================================
+   PHYSICAL BOOK STYLING (REAL OPEN BOOK SPREAD)
+   ========================================================================== */
+.real-book-container {
+  position: relative;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  perspective: 2400px;
+}
+
+/* Physical Leather Exterior Shell */
+.real-book-shell {
+  background: 
+    radial-gradient(ellipse at 50% 50%, #46251b 0%, #2b140e 70%, #1c0c08 100%);
+  border-radius: 14px;
+  padding: 20px 22px 26px;
+  box-shadow: var(--shadow-book);
+  position: relative;
+  border: 1px solid rgba(212, 175, 109, 0.3);
+}
+
+/* Stitched Border Along Leather Edge */
+.real-book-shell::before {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1.5px dashed rgba(212, 175, 109, 0.32);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+/* Antique Brass Corner Clasps */
+.brass-corner {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  pointer-events: none;
+  z-index: 40;
+}
+.brass-corner.top-left { top: 6px; left: 6px; }
+.brass-corner.top-right { top: 6px; right: 6px; transform: rotate(90deg); }
+.brass-corner.bottom-left { bottom: 6px; left: 6px; transform: rotate(-90deg); }
+.brass-corner.bottom-right { bottom: 6px; right: 6px; transform: rotate(180deg); }
+
+/* The Two-Page Paper Spread */
+.real-book-spread {
+  min-height: 660px;
+  background: var(--paper-parchment);
+  background-image: 
+    linear-gradient(90deg, rgba(70,45,30,0.06) 0%, transparent 4%, transparent 96%, rgba(70,45,30,0.06) 100%),
+    radial-gradient(ellipse at 50% 50%, #faf5eb 0%, #f4ecdc 80%, #ebe0cb 100%);
+  border-radius: 6px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.25),
+    inset 0 0 45px rgba(94, 69, 56, 0.08);
+}
+
+/* Center Spine 3D Curvature and Gutter Shadow */
+.spine-gutter-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 52px;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    90deg,
+    rgba(35, 18, 12, 0.05) 0%,
+    rgba(35, 18, 12, 0.22) 35%,
+    rgba(22, 10, 6, 0.5) 48%,
+    rgba(14, 6, 4, 0.6) 50%,
+    rgba(22, 10, 6, 0.5) 52%,
+    rgba(35, 18, 12, 0.22) 65%,
+    rgba(35, 18, 12, 0.05) 100%
+  );
+  pointer-events: none;
+  z-index: 35;
+}
+
+/* Woven Silk Ribbon Bookmark Draped Down the Center */
+.silk-ribbon-bookmark {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 14px;
+  height: 104%;
+  transform: translateX(-50%);
+  background: linear-gradient(90deg, #85261b, #a63527 50%, #701f16);
+  border-radius: 2px 2px 0 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 36;
+  clip-path: polygon(0 0, 100% 0, 100% 92%, 50% 100%, 0 92%);
+}
+
+/* Curled Corner Page-Turn Illusion */
+.page-curl-corner {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, transparent 50%, rgba(94, 69, 56, 0.15) 51%, #e5d7be 52%, #faf5eb 100%);
+  box-shadow: -3px -3px 8px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  z-index: 25;
+  transition: transform 0.25s ease;
+}
+.page-curl-corner:hover {
+  transform: scale(1.15);
+}
+
+/* Hand-carved Red Ink Seal Stamp (Screen 11) */
+.stamp-explored {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 2.5px solid var(--accent-cinnabar);
+  padding: 6px 16px;
+  color: var(--accent-cinnabar);
+  font-family: var(--font-serif);
+  font-weight: 700;
+  font-size: 13.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 4px;
+  position: relative;
+  background: rgba(166, 53, 39, 0.05);
+  transform: rotate(-6deg);
+  box-shadow: 0 0 0 1px rgba(166, 53, 39, 0.2);
+  user-select: none;
+  animation: stampImpact 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes stampImpact {
+  0% { transform: rotate(-6deg) scale(1.6); opacity: 0; }
+  100% { transform: rotate(-6deg) scale(1); opacity: 1; }
 }
 
 /* Buttons */
@@ -128,18 +276,17 @@ button {
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   display: inline-flex;
   align-items: center;
   gap: 8px;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 15px rgba(37, 18, 13, 0.3);
+  box-shadow: 0 4px 15px rgba(35, 18, 12, 0.25);
 }
-
 .btn-warm:hover {
-  background: #502e23;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(37, 18, 13, 0.45);
+  background: #4c261c;
+  transform: translateY(-1.5px);
+  box-shadow: 0 6px 20px rgba(35, 18, 12, 0.4);
 }
 
 .btn-gold {
@@ -149,37 +296,40 @@ button {
   border-radius: 9999px;
   font-size: 13px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   transition: all 0.25s ease;
 }
-
 .btn-gold:hover {
   background: linear-gradient(135deg, var(--accent-gold-soft), var(--accent-gold));
   transform: translateY(-1px);
 }
 
-/* Realistic Cinnabar Stamp (Screen 11) */
-.stamp-explored {
-  display: inline-block;
-  border: 3px solid var(--accent-cinnabar);
-  padding: 6px 18px;
-  color: var(--accent-cinnabar);
-  font-family: var(--font-serif);
-  font-weight: 700;
-  font-size: 16px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  border-radius: 4px;
-  position: relative;
-  background: rgba(166, 56, 42, 0.04);
-  transform: rotate(-7deg);
-  box-shadow: 0 0 0 1px rgba(166, 56, 42, 0.2);
-  user-select: none;
+/* ==========================================================================
+   INTERACTIVE NANA BOT ANIMATIONS
+   ========================================================================== */
+@keyframes nanaBobbing {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
 }
 
-.stamp-explored::before {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.15'/%3E%3C/svg%3E");
-  pointer-events: none;
+@keyframes floatBubble {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.nana-roaming-character {
+  animation: nanaBobbing 2.8s infinite ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .real-book-spread {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+  .spine-gutter-shadow, .silk-ribbon-bookmark {
+    display: none;
+  }
 }
